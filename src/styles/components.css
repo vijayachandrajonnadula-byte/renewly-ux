@@ -427,6 +427,24 @@
   font-weight: var(--font-weight-medium);
 }
 
+.savings-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.savings-card__meta span {
+  display: inline-flex;
+  min-height: 1.625rem;
+  align-items: center;
+  border-radius: var(--radius-full);
+  color: var(--color-slate-600);
+  background: var(--color-slate-100);
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
 .savings-card__body,
 .savings-card__action {
   color: var(--color-slate-600);
@@ -438,6 +456,18 @@
   border-top: var(--border-subtle);
   padding-top: var(--space-4);
   font-weight: var(--font-weight-medium);
+}
+
+.savings-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  border-top: var(--border-subtle);
+  padding-top: var(--space-4);
+}
+
+.savings-card__actions button {
+  padding: 0 var(--space-4);
 }
 
 @media (max-width: 1100px) {
@@ -1196,6 +1226,171 @@
   }
 
   .approval-step__actions button {
+    flex: 1 1 12rem;
+  }
+}
+
+.day-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.day-switcher button {
+  padding: 0 var(--space-4);
+}
+
+.savings-page,
+.reports-page {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.savings-filter-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.savings-page-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.report-summary-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.report-document {
+  overflow: hidden;
+}
+
+.report-section-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: var(--space-5);
+}
+
+.report-section-grid article {
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  padding: var(--space-4);
+}
+
+.report-section-grid h3 {
+  color: var(--color-slate-950);
+  font-size: var(--font-size-md);
+}
+
+.report-section-grid p {
+  margin-top: var(--space-2);
+  color: var(--color-slate-600);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  border-top: var(--border-subtle);
+  padding: var(--space-5);
+}
+
+.report-actions button {
+  padding: 0 var(--space-4);
+}
+
+.report-lists {
+  display: grid;
+  align-items: start;
+  gap: var(--space-5);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.report-list-card {
+  overflow: hidden;
+}
+
+.report-list {
+  display: grid;
+}
+
+.report-list__item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  border-bottom: var(--border-subtle);
+  padding: var(--space-4) var(--space-5);
+}
+
+.report-list__item:last-child {
+  border-bottom: 0;
+}
+
+.report-list__item--highlight {
+  background: rgb(254 242 242 / 0.45);
+}
+
+.report-list__item--success {
+  background: rgb(240 253 244 / 0.55);
+}
+
+.report-list__item div {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.report-list__item strong {
+  color: var(--color-slate-950);
+  font-size: var(--font-size-sm);
+}
+
+.report-list__item span {
+  color: var(--color-slate-500);
+  font-size: var(--font-size-xs);
+}
+
+@media (max-width: 1200px) {
+  .report-summary-grid,
+  .savings-filter-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .report-lists {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .savings-page-grid,
+  .report-section-grid,
+  .report-summary-grid,
+  .savings-filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .savings-page-grid,
+  .report-section-grid,
+  .report-summary-grid,
+  .savings-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-list__item {
+    flex-direction: column;
+  }
+
+  .savings-card__actions button,
+  .report-actions button,
+  .day-switcher button {
     flex: 1 1 12rem;
   }
 }
