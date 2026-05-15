@@ -59,7 +59,8 @@ button:disabled {
   cursor: not-allowed;
 }
 
-input {
+input,
+select {
   min-height: 2.5rem;
   width: 100%;
   border: var(--border-subtle);
@@ -71,6 +72,10 @@ input {
 
 input::placeholder {
   color: var(--color-slate-400);
+}
+
+select {
+  cursor: pointer;
 }
 
 a {

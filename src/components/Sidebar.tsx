@@ -8,7 +8,11 @@ const navigationItems = [
   'Settings',
 ]
 
-function Sidebar() {
+type SidebarProps = {
+  activeItem?: string
+}
+
+function Sidebar({ activeItem = 'Dashboard' }: SidebarProps) {
   return (
     <aside className="sidebar" aria-label="Primary navigation">
       <div className="sidebar__brand">
@@ -24,8 +28,8 @@ function Sidebar() {
       <nav className="sidebar__nav">
         {navigationItems.map((item) => (
           <a
-            aria-current={item === 'Dashboard' ? 'page' : undefined}
-            className={`sidebar__link${item === 'Dashboard' ? ' sidebar__link--active' : ''}`}
+            aria-current={item === activeItem ? 'page' : undefined}
+            className={`sidebar__link${item === activeItem ? ' sidebar__link--active' : ''}`}
             href="#"
             key={item}
           >

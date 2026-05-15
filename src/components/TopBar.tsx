@@ -1,12 +1,18 @@
-function TopBar() {
+type TopBarProps = {
+  title?: string
+  subtitle?: string
+}
+
+function TopBar({
+  title = 'Dashboard',
+  subtitle = 'Review renewals, approvals, risk, and potential savings from one calm workspace.',
+}: TopBarProps) {
   return (
     <header className="topbar">
       <div className="topbar__copy">
         <div className="topbar__eyebrow">Renewly workspace</div>
-        <h1 className="topbar__title">Dashboard</h1>
-        <p className="topbar__subtitle">
-          Review renewals, approvals, risk, and potential savings from one calm workspace.
-        </p>
+        <h1 className="topbar__title">{title}</h1>
+        <p className="topbar__subtitle">{subtitle}</p>
       </div>
 
       <div className="topbar__actions">
