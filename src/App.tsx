@@ -1,14 +1,14 @@
 import AppShell from './components/AppShell'
-import SubscriptionDetail from './routes/SubscriptionDetail'
+import RenewalCalendar from './routes/RenewalCalendar'
 
 function App() {
   return (
     <AppShell
-      activeNavItem="Subscriptions"
-      subtitle="Review tool context, renewal risk, approval state, and mock savings potential."
-      title="Subscription detail"
+      activeNavItem="Renewals"
+      subtitle="Track upcoming renewals, risk, ownership, and approval deadlines."
+      title="Renewal Calendar"
     >
-      <SubscriptionDetail />
+      <RenewalCalendar />
     </AppShell>
   )
 }
