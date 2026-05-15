@@ -144,18 +144,17 @@ function Dashboard() {
       <div className="dashboard__header">
         <div>
           <h2 className="dashboard__title" id="dashboard-title">
-            Dashboard
+            Welcome back, Priya
           </h2>
           <p className="dashboard__subtitle">
-            A renewal command centre for finance and operations teams to spot urgent work,
-            pending approvals, and mock estimated savings opportunities.
+            Review upcoming renewals, owner approvals, and estimated savings across the workspace.
           </p>
         </div>
         <div className="dashboard__actions">
-          <button type="button">Review high-risk renewals</button>
           <button className="button-secondary" type="button">
-            View savings opportunities
+            View savings
           </button>
+          <button type="button">Review high-risk renewals</button>
         </div>
       </div>
 
@@ -186,30 +185,33 @@ function Dashboard() {
         />
       </div>
 
-      <section className="dashboard-section" aria-labelledby="attention-title">
-        <div className="section-heading">
-          <div>
-            <h2 id="attention-title">Needs attention</h2>
-            <p>Limited to the most urgent signals so the next decision is easier to find.</p>
-          </div>
-        </div>
-        <div className="attention-list">
-          {attentionItems.map((item) => (
-            <article className={`card attention-item attention-item--${item.risk}`} key={item.id}>
-              <div>
-                <div className="list-item__title-row">
-                  <h3>{item.title}</h3>
-                  <RiskBadge risk={item.risk} />
-                </div>
-                <p>{item.detail}</p>
-                <div className="list-item__meta">{item.meta}</div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <div className="dashboard-grid">
+        <section className="card dashboard-section dashboard-section--flush" aria-labelledby="attention-title">
+          <div className="section-heading section-heading--padded">
+            <div>
+              <h2 id="attention-title">Needs attention</h2>
+              <p>Most urgent renewal signals.</p>
+            </div>
+          </div>
+          <div className="attention-list">
+            {attentionItems.slice(0, 4).map((item) => (
+              <article className="attention-item" key={item.id}>
+                <span className="tool-avatar" aria-hidden="true">
+                  {item.title.charAt(0)}
+                </span>
+                <div>
+                  <div className="list-item__title-row">
+                    <h3>{item.title}</h3>
+                    <RiskBadge risk={item.risk} />
+                  </div>
+                  <p>{item.detail}</p>
+                  <div className="list-item__meta">{item.meta}</div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className="card dashboard-section dashboard-section--flush" aria-labelledby="renewals-title">
           <div className="section-heading section-heading--padded">
             <div>

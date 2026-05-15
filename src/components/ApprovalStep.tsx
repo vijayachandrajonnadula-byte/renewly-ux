@@ -1,5 +1,4 @@
 import RiskBadge from './RiskBadge'
-import StatusBadge from './StatusBadge'
 import type { ApprovalRequest } from '../types'
 
 type ApprovalStepProps = {
@@ -19,7 +18,6 @@ const formatDate = (value: string) =>
   new Intl.DateTimeFormat('en-US', {
     day: 'numeric',
     month: 'short',
-    year: 'numeric',
   }).format(new Date(`${value}T00:00:00`))
 
 const canTakeAction = (status: ApprovalRequest['status']) =>
@@ -27,51 +25,36 @@ const canTakeAction = (status: ApprovalRequest['status']) =>
 
 function ApprovalStep({ approval, nextAction, onAction }: ApprovalStepProps) {
   return (
-    <article className={`card approval-step${approval.risk === 'high' ? ' approval-step--high-risk' : ''}`}>
-      <div className="approval-step__header">
-        <div>
-          <h3>{approval.toolName}</h3>
-          <p>{approval.owner} · {approval.department}</p>
-        </div>
-        <div className="approval-step__badges">
-          <RiskBadge risk={approval.risk} />
-          <StatusBadge status={approval.status} />
-        </div>
-      </div>
-
-      <div className="approval-step__facts">
-        <div>
-          <span>Renewal date</span>
-          <strong>{formatDate(approval.renewalDate)}</strong>
-        </div>
-        <div>
-          <span>Cost</span>
-          <strong>{formatCurrency(approval.cost)}</strong>
-        </div>
-        <div>
-          <span>Submitted by</span>
-          <strong>{approval.submittedBy}</strong>
-        </div>
-        <div>
-          <span>Submitted date</span>
-          <strong>{formatDate(approval.submittedDate)}</strong>
-        </div>
-      </div>
-
-      <div className="approval-step__body">
-        <div>
-          <span>Requested decision</span>
-          <p>{approval.requestedDecision}</p>
-        </div>
-        <div>
-          <span>Reason for review</span>
+    <article className="card approval-step">
+      <div className="approval-step__compact">
+        <span className="tool-avatar approval-step__avatar" aria-hidden="true">
+          {approval.toolName.charAt(0)}
+        </span>
+        <div className="approval-step__identity">
+          <div className="approval-step__title-row">
+            <h3>{approval.toolName}</h3>
+            <RiskBadge risk={approval.risk} />
+          </div>
           <p>{approval.reasonForReview}</p>
         </div>
-        <div>
-          <span>Next action</span>
-          <p>{nextAction}</p>
+        <div className="approval-step__requested">
+          <span>Requested</span>
+          <strong>{approval.requestedDecision}</strong>
+          <small>by {approval.submittedBy} · {formatDate(approval.submittedDate)}</small>
+        </div>
+        <div className="approval-step__owner">
+          <span>Owner</span>
+          <strong>{approval.owner}</strong>
+          <small>{approval.department}</small>
+        </div>
+        <div className="approval-step__cost">
+          <span>Renews · Cost</span>
+          <strong>{formatCurrency(approval.cost)}/mo</strong>
+          <small>{formatDate(approval.renewalDate)}</small>
         </div>
       </div>
+
+      <p className="approval-step__next">{nextAction}</p>
 
       {canTakeAction(approval.status) ? (
         <div className="approval-step__actions">
@@ -86,7 +69,7 @@ function ApprovalStep({ approval, nextAction, onAction }: ApprovalStepProps) {
             type="button"
             onClick={() => onAction('Changes requested from the tool owner.')}
           >
-            Request changes
+            Changes
           </button>
           <button
             className="button-secondary button-secondary--danger"
@@ -95,15 +78,14 @@ function ApprovalStep({ approval, nextAction, onAction }: ApprovalStepProps) {
           >
             Reject
           </button>
-          <button
-            className="button-secondary"
-            type="button"
-            onClick={() => onAction('Owner assignment requested.')}
-          >
-            Assign owner
+        </div>
+      ) : (
+        <div className="approval-step__actions">
+          <button className="button-secondary" type="button">
+            View
           </button>
         </div>
-      ) : null}
+      )}
     </article>
   )
 }

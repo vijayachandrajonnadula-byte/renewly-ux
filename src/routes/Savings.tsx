@@ -82,18 +82,19 @@ function Savings() {
       <div className="dashboard__header">
         <div>
           <h2 className="dashboard__title" id="savings-title">
-            Savings Opportunities
+            Savings opportunities
           </h2>
           <p className="dashboard__subtitle">
-            Review potential SaaS savings from unused seats, duplicate tools, and upcoming renewals.
+            Estimated savings — based on mock usage data. Review with owner before applying.
           </p>
+          <p className="page-note">All values are estimates labelled as potential savings — not realised.</p>
         </div>
         <div className="dashboard__actions">
-          <button type="button" onClick={() => setSortOrder('highest')}>
-            Review highest opportunity
-          </button>
           <button className="button-secondary" type="button">
-            Export savings list
+            Export list
+          </button>
+          <button type="button" onClick={() => setSortOrder('highest')}>
+            ✓ Apply selected (2)
           </button>
         </div>
       </div>
@@ -126,7 +127,7 @@ function Savings() {
         />
       </div>
 
-      <section className="card filter-panel" aria-label="Savings filters">
+      <section className="filter-panel" aria-label="Savings filters">
         <div className="filter-grid savings-filter-grid">
           <label className="filter-field">
             <span>Opportunity type</span>

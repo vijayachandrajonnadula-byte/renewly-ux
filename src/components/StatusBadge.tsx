@@ -10,10 +10,10 @@ const statusLabels: Record<ApprovalStatus | SubscriptionStatus, string> = {
   renewal_due: 'Renewal due',
   pending_cancellation: 'Pending cancellation',
   cancelled: 'Cancelled',
-  not_required: 'Not required',
-  pending: 'Pending',
+  not_required: 'No approval',
+  pending: 'Waiting finance',
   approved: 'Approved',
-  needs_info: 'Needs info',
+  needs_info: 'Needs review',
   rejected: 'Rejected',
 }
 
@@ -24,9 +24,9 @@ const statusTone: Record<ApprovalStatus | SubscriptionStatus, string> = {
   pending_cancellation: 'danger',
   cancelled: 'neutral',
   not_required: 'neutral',
-  pending: 'warning',
+  pending: 'info',
   approved: 'success',
-  needs_info: 'info',
+  needs_info: 'review',
   rejected: 'danger',
 }
 

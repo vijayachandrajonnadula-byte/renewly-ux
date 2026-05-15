@@ -70,6 +70,28 @@ function Settings() {
         />
       ) : null}
 
+      <div className="settings-layout">
+        <aside className="settings-tabs" aria-label="Settings sections">
+          {[
+            'Company profile',
+            'Renewal alerts',
+            'Approval rules',
+            'Team roles',
+            'Notifications',
+            'Integrations',
+            'Billing',
+          ].map((item, index) => (
+            <button
+              className={index === 0 ? 'settings-tabs__item settings-tabs__item--active' : 'settings-tabs__item'}
+              key={item}
+              type="button"
+            >
+              {item}
+            </button>
+          ))}
+        </aside>
+
+        <div className="settings-content">
       <div className="settings-grid">
         <section className="card settings-section" aria-labelledby="company-profile-title">
           <div className="section-heading section-heading--padded">
@@ -235,6 +257,8 @@ function Settings() {
           </label>
         </div>
       </section>
+        </div>
+      </div>
     </section>
   )
 }

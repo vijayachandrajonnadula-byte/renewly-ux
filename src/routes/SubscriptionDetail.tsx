@@ -9,7 +9,7 @@ import { subscriptions } from '../data/subscriptions'
 import { usageRecords } from '../data/usage'
 import { vendors } from '../data/vendors'
 
-const selectedSubscriptionId = 'sub-pixelboard'
+const selectedSubscriptionId = 'sub-forge-analytics'
 const today = new Date('2026-05-15T00:00:00')
 
 const formatCurrency = (value: number) =>

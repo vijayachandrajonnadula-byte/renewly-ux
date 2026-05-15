@@ -9,6 +9,7 @@ import type {
   RenewalRisk,
   SubscriptionStatus,
   ToolCategory,
+  Subscription as SubscriptionType,
 } from '../types'
 
 const today = new Date('2026-05-15T00:00:00')
@@ -48,7 +49,11 @@ const labelFromValue = (value: string) =>
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ')
 
-function Subscriptions() {
+type SubscriptionsProps = {
+  onOpenDetail?: (subscription: SubscriptionType) => void
+}
+
+function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [category, setCategory] = useState<ToolCategory | 'all'>('all')
   const [risk, setRisk] = useState<RenewalRisk | 'all'>('all')
@@ -109,14 +114,14 @@ function Subscriptions() {
             Subscriptions
           </h2>
           <p className="dashboard__subtitle">
-            Manage software tools, renewal risk, ownership, and approval status.
+            All SaaS tools across the workspace · 24 active subscriptions
           </p>
         </div>
         <div className="dashboard__actions">
-          <button type="button">Add subscription</button>
           <button className="button-secondary" type="button">
             Export list
           </button>
+          <button type="button">+ Add subscription</button>
         </div>
       </div>
 
@@ -147,12 +152,11 @@ function Subscriptions() {
         />
       </div>
 
-      <section className="card filter-panel" aria-label="Subscription filters">
+      <section className="filter-panel subscriptions-filter-panel" aria-label="Subscription filters">
         <label className="filter-field filter-field--search">
-          <span>Search</span>
           <input
             onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search tools, vendors, owners, departments, or categories"
+            placeholder="Search tools, vendors, owners..."
             type="search"
             value={searchQuery}
           />
@@ -165,7 +169,7 @@ function Subscriptions() {
               onChange={(event) => setCategory(event.target.value as ToolCategory | 'all')}
               value={category}
             >
-              <option value="all">All categories</option>
+              <option value="all">All</option>
               {categories.map((item) => (
                 <option key={item} value={item}>
                   {item}
@@ -175,12 +179,12 @@ function Subscriptions() {
           </label>
 
           <label className="filter-field">
-            <span>Renewal risk</span>
+            <span>Risk</span>
             <select
               onChange={(event) => setRisk(event.target.value as RenewalRisk | 'all')}
               value={risk}
             >
-              <option value="all">All risks</option>
+              <option value="all">Any</option>
               {risks.map((item) => (
                 <option key={item} value={item}>
                   {labelFromValue(item)}
@@ -195,7 +199,7 @@ function Subscriptions() {
               onChange={(event) => setStatus(event.target.value as SubscriptionStatus | 'all')}
               value={status}
             >
-              <option value="all">All statuses</option>
+              <option value="all">Any</option>
               {subscriptionStatuses.map((item) => (
                 <option key={item} value={item}>
                   {labelFromValue(item)}
@@ -212,7 +216,7 @@ function Subscriptions() {
               }
               value={approvalStatus}
             >
-              <option value="all">All approvals</option>
+              <option value="all">Any</option>
               {approvalStatuses.map((item) => (
                 <option key={item} value={item}>
                   {labelFromValue(item)}
@@ -222,12 +226,12 @@ function Subscriptions() {
           </label>
 
           <label className="filter-field">
-            <span>Billing cycle</span>
+            <span>Cycle</span>
             <select
               onChange={(event) => setBillingCycle(event.target.value as BillingCycle | 'all')}
               value={billingCycle}
             >
-              <option value="all">All cycles</option>
+              <option value="all">Any</option>
               {billingCycles.map((item) => (
                 <option key={item} value={item}>
                   {labelFromValue(item)}
@@ -237,13 +241,13 @@ function Subscriptions() {
           </label>
 
           <button className="button-secondary filter-reset" onClick={clearFilters} type="button">
-            Clear filters
+            Reset
           </button>
         </div>
       </section>
 
       <section className="card subscriptions-table-card" aria-labelledby="table-title">
-        <div className="section-heading section-heading--padded">
+        <div className="section-heading section-heading--padded subscriptions-table-heading">
           <div>
             <h2 id="table-title">Subscription inventory</h2>
             <p>
@@ -253,7 +257,7 @@ function Subscriptions() {
         </div>
 
         {filteredSubscriptions.length > 0 ? (
-          <SubscriptionTable subscriptions={filteredSubscriptions} />
+          <SubscriptionTable onOpenDetail={onOpenDetail} subscriptions={filteredSubscriptions} />
         ) : (
           <EmptyState
             actionLabel="Clear filters"

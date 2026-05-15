@@ -16,11 +16,17 @@ const formatCurrency = (value: number) =>
   }).format(value)
 
 const formatDate = (value: string) =>
-  new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(`${value}T00:00:00`))
+  new Intl.DateTimeFormat('en-US', { day: '2-digit', month: 'short' }).format(
+    new Date(`${value}T00:00:00`),
+  )
+
+const getMonth = (value: string) =>
+  new Intl.DateTimeFormat('en-US', { month: 'short' })
+    .format(new Date(`${value}T00:00:00`))
+    .toUpperCase()
+
+const getDay = (value: string) =>
+  new Intl.DateTimeFormat('en-US', { day: '2-digit' }).format(new Date(`${value}T00:00:00`))
 
 function CalendarCard({ daysUntilRenewal, hasSavingsOpportunity, subscription }: CalendarCardProps) {
   const isPendingApproval =
@@ -32,43 +38,38 @@ function CalendarCard({ daysUntilRenewal, hasSavingsOpportunity, subscription }:
         subscription.renewalRisk === 'high' ? ' calendar-card--high-risk' : ''
       }`}
     >
-      <div className="calendar-card__header">
-        <div>
-          <h3>{subscription.toolName}</h3>
-          <p>{subscription.vendorName}</p>
+      <div className="calendar-card__content">
+        <div className={`calendar-date-block${subscription.renewalRisk === 'high' ? ' calendar-date-block--risk' : ''}`}>
+          <span>{getMonth(subscription.renewalDate)}</span>
+          <strong>{getDay(subscription.renewalDate)}</strong>
         </div>
-        <RiskBadge risk={subscription.renewalRisk} />
-      </div>
-
-      <div className="calendar-card__facts">
-        <div>
-          <span>Owner</span>
-          <strong>{subscription.owner}</strong>
-        </div>
-        <div>
-          <span>Department</span>
-          <strong>{subscription.department}</strong>
-        </div>
-        <div>
-          <span>Renewal date</span>
-          <strong>{formatDate(subscription.renewalDate)}</strong>
-        </div>
-        <div>
-          <span>Days until renewal</span>
-          <strong>{daysUntilRenewal}</strong>
-        </div>
-        <div>
-          <span>Annual cost</span>
-          <strong>{formatCurrency(subscription.annualCost)}</strong>
-        </div>
-        <div>
-          <span>Cancellation window</span>
-          <strong>{subscription.cancellationWindowDays} days</strong>
+        <div className="calendar-card__main">
+          <div className="calendar-card__header">
+            <div>
+              <h3>{subscription.toolName}</h3>
+              <p>{subscription.vendorName} · {subscription.category}</p>
+            </div>
+          </div>
+          <div className="calendar-card__owner">
+            <span className="owner-avatar" aria-hidden="true">
+              {subscription.owner.split(' ').map((part) => part.charAt(0)).join('').slice(0, 2)}
+            </span>
+            <span>{subscription.owner}</span>
+          </div>
+          <div className="calendar-card__cost-row">
+            <strong>{formatCurrency(subscription.monthlyCost)}</strong>
+            <span>/mo · {subscription.billingCycle}</span>
+            <em>in {daysUntilRenewal} days</em>
+          </div>
+          <div className="calendar-card__footer">
+            <RiskBadge risk={subscription.renewalRisk} />
+            <StatusBadge status={subscription.approvalStatus} />
+          </div>
         </div>
       </div>
-
-      <div className="calendar-card__footer">
-        <StatusBadge status={subscription.approvalStatus} />
+      <div className="calendar-card__signals">
+        <span>{formatDate(subscription.renewalDate)} renewal</span>
+        <span>{subscription.cancellationWindowDays}d cancellation window</span>
         {isPendingApproval ? <span className="incomplete-pill">Approval incomplete</span> : null}
         {hasSavingsOpportunity ? <span className="opportunity-pill">Potential savings review</span> : null}
       </div>

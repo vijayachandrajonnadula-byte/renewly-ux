@@ -23,31 +23,40 @@ function SavingsCard({ onAction, opportunity, usageSignal }: SavingsCardProps) {
   return (
     <article className="card savings-card">
       <div className="savings-card__header">
-        <div>
-          <p className="savings-card__label">Estimated potential</p>
-          <h3 className="savings-card__title">{opportunity.toolName}</h3>
+        <div className="savings-card__identity">
+          <span className="tool-avatar" aria-hidden="true">
+            {opportunity.toolName.charAt(0)}
+          </span>
+          <div>
+            <h3 className="savings-card__title">{opportunity.toolName}</h3>
+            <p>Based on mock usage signal · last 60 days</p>
+          </div>
         </div>
-        <span className="badge status-badge status-badge--info">
+        <span className={`badge status-badge status-badge--${opportunity.confidence === 'high' ? 'success' : opportunity.confidence === 'medium' ? 'warning' : 'neutral'}`}>
           {opportunity.confidence} confidence
         </span>
       </div>
       <div className="savings-card__meta">
         <span>{labelFromValue(opportunity.type)}</span>
-        <span>{opportunity.riskLevel} risk</span>
       </div>
-      <div className="savings-card__value">
-        {formatCurrency(opportunity.estimatedMonthlySavings)}
-        <span> / month estimated</span>
+      <div className="savings-card__amounts">
+        <div>
+          <span>Est. monthly</span>
+          <strong>{formatCurrency(opportunity.estimatedMonthlySavings)}</strong>
+        </div>
+        <div>
+          <span>Est. annual</span>
+          <strong>{formatCurrency(opportunity.estimatedAnnualSavings)}</strong>
+        </div>
       </div>
-      <div className="savings-card__value">
-        {formatCurrency(opportunity.estimatedAnnualSavings)}
-        <span> / year potential</span>
-      </div>
+      <p className="savings-card__label">Reason</p>
       <p className="savings-card__body">{opportunity.reason}</p>
       {usageSignal ? <p className="savings-card__body">Based on mock usage data: {usageSignal}</p> : null}
-      <p className="savings-card__action">
-        Review recommended: {opportunity.recommendedAction}
-      </p>
+      <div className="savings-card__recommendation">
+        <span>Recommended</span>
+        <strong>{opportunity.recommendedAction}</strong>
+        <em>Risk · {opportunity.riskLevel}</em>
+      </div>
       {onAction ? (
         <div className="savings-card__actions">
           <button
