@@ -1,14 +1,14 @@
 import AppShell from './components/AppShell'
-import Subscriptions from './routes/Subscriptions'
+import SubscriptionDetail from './routes/SubscriptionDetail'
 
 function App() {
   return (
     <AppShell
       activeNavItem="Subscriptions"
-      subtitle="Compare software tools, owners, renewal risk, and approval status."
-      title="Subscriptions"
+      subtitle="Review tool context, renewal risk, approval state, and mock savings potential."
+      title="Subscription detail"
     >
-      <Subscriptions />
+      <SubscriptionDetail />
     </AppShell>
   )
 }
