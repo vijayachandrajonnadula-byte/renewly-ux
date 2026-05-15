@@ -1,14 +1,14 @@
 import AppShell from './components/AppShell'
-import RenewalCalendar from './routes/RenewalCalendar'
+import ApprovalQueue from './routes/ApprovalQueue'
 
 function App() {
   return (
     <AppShell
-      activeNavItem="Renewals"
-      subtitle="Track upcoming renewals, risk, ownership, and approval deadlines."
-      title="Renewal Calendar"
+      activeNavItem="Approvals"
+      subtitle="Review renewal decisions, owner requests, and finance approvals."
+      title="Approval Queue"
     >
-      <RenewalCalendar />
+      <ApprovalQueue />
     </AppShell>
   )
 }
