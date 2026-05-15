@@ -80,6 +80,10 @@
   background: var(--color-slate-100);
 }
 
+.sidebar__link:focus-visible {
+  outline-offset: -2px;
+}
+
 .sidebar__link--active {
   color: var(--color-primary-700);
   background: var(--color-primary-50);
@@ -162,11 +166,13 @@
   .sidebar__nav {
     display: flex;
     overflow-x: auto;
+    scroll-snap-type: x proximity;
     padding: var(--space-3) var(--space-4);
   }
 
   .sidebar__link {
     flex: 0 0 auto;
+    scroll-snap-align: start;
   }
 
   .sidebar__footer {
@@ -197,5 +203,9 @@
   .topbar__actions {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .app-shell__content {
+    padding: var(--space-4);
   }
 }
