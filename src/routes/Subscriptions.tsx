@@ -7,9 +7,9 @@ import type {
   ApprovalStatus,
   BillingCycle,
   RenewalRisk,
+  Subscription as SubscriptionType,
   SubscriptionStatus,
   ToolCategory,
-  Subscription as SubscriptionType,
 } from '../types'
 
 const today = new Date('2026-05-15T00:00:00')
@@ -152,8 +152,9 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
         />
       </div>
 
-      <section className="filter-panel subscriptions-filter-panel" aria-label="Subscription filters">
-        <label className="filter-field filter-field--search">
+      <section className="reference-filterbar subscriptions-toolbar" aria-label="Subscription filters">
+        <label className="reference-search">
+          <span aria-hidden="true">⌕</span>
           <input
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search tools, vendors, owners..."
@@ -162,8 +163,8 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
           />
         </label>
 
-        <div className="filter-grid">
-          <label className="filter-field">
+        <div className="reference-filterbar__chips">
+          <label className="filter-chip-field">
             <span>Category</span>
             <select
               onChange={(event) => setCategory(event.target.value as ToolCategory | 'all')}
@@ -178,7 +179,7 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
             </select>
           </label>
 
-          <label className="filter-field">
+          <label className="filter-chip-field">
             <span>Risk</span>
             <select
               onChange={(event) => setRisk(event.target.value as RenewalRisk | 'all')}
@@ -193,7 +194,7 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
             </select>
           </label>
 
-          <label className="filter-field">
+          <label className="filter-chip-field">
             <span>Status</span>
             <select
               onChange={(event) => setStatus(event.target.value as SubscriptionStatus | 'all')}
@@ -208,7 +209,7 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
             </select>
           </label>
 
-          <label className="filter-field">
+          <label className="filter-chip-field">
             <span>Approval</span>
             <select
               onChange={(event) =>
@@ -225,7 +226,7 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
             </select>
           </label>
 
-          <label className="filter-field">
+          <label className="filter-chip-field">
             <span>Cycle</span>
             <select
               onChange={(event) => setBillingCycle(event.target.value as BillingCycle | 'all')}
@@ -244,6 +245,10 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
             Reset
           </button>
         </div>
+
+        <span className="reference-filterbar__count">
+          Showing {filteredSubscriptions.length} of 24
+        </span>
       </section>
 
       <section className="card subscriptions-table-card" aria-labelledby="table-title">

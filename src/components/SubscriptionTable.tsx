@@ -7,6 +7,8 @@ type SubscriptionTableProps = {
   subscriptions: Subscription[]
 }
 
+const today = new Date('2026-05-15T00:00:00')
+
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('en-US', {
     currency: 'USD',
@@ -16,25 +18,11 @@ const formatCurrency = (value: number) =>
 
 const formatDate = (value: string) =>
   new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
+    day: '2-digit',
     month: 'short',
-    year: 'numeric',
   }).format(new Date(`${value}T00:00:00`))
 
-const today = new Date('2026-05-15T00:00:00')
-const thirtyDaysFromToday = new Date(today)
-thirtyDaysFromToday.setDate(today.getDate() + 30)
-
-const isWithinNextThirtyDays = (dateValue: string) => {
-  const renewalDate = new Date(`${dateValue}T00:00:00`)
-
-  return renewalDate >= today && renewalDate <= thirtyDaysFromToday
-}
-
-const getUtilisation = (subscription: Subscription) =>
-  Math.round((subscription.activeUsers / subscription.seatsPurchased) * 100)
-
-const getDaysUntilRenewal = (dateValue: string) => {
+const daysUntilRenewal = (dateValue: string) => {
   const renewalDate = new Date(`${dateValue}T00:00:00`)
   const difference = renewalDate.getTime() - today.getTime()
 
@@ -49,131 +37,125 @@ const getInitials = (value: string) =>
     .slice(0, 2)
     .toUpperCase()
 
+const getUtilisation = (subscription: Subscription) =>
+  Math.round((subscription.activeUsers / subscription.seatsPurchased) * 100)
+
+const labelFromValue = (value: string) =>
+  value
+    .split('_')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+
 function SubscriptionTable({ onOpenDetail, subscriptions }: SubscriptionTableProps) {
   return (
-    <div className="table-shell" role="region" aria-label="Subscriptions table" tabIndex={0}>
-      <table className="subscription-table">
-        <colgroup>
-          <col className="subscription-table__select-col" />
-          <col className="subscription-table__tool-col" />
-          <col className="subscription-table__owner-col" />
-          <col className="subscription-table__cost-col" />
-          <col className="subscription-table__renewal-col" />
-          <col className="subscription-table__seats-col" />
-          <col className="subscription-table__badge-col" />
-          <col className="subscription-table__badge-col" />
-          <col className="subscription-table__badge-col" />
-          <col className="subscription-table__action-col" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th aria-label="Select subscription"></th>
-            <th>Tool / Vendor</th>
-            <th>Owner / Department</th>
-            <th>Cost / Mo</th>
-            <th>Renews</th>
-            <th>Seats / Utilisation</th>
-            <th>Risk</th>
-            <th>Approval</th>
-            <th>Status</th>
-            <th aria-label="Actions"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {subscriptions.map((subscription) => {
-            const utilisation = getUtilisation(subscription)
-            const daysUntilRenewal = getDaysUntilRenewal(subscription.renewalDate)
-            const renewalSoon = isWithinNextThirtyDays(subscription.renewalDate)
-            const lowUtilisation = utilisation < 60
+    <div className="subscription-table-shell" role="region" aria-label="Subscriptions table" tabIndex={0}>
+      <div className="subscription-grid subscription-grid--header" role="row">
+        <div aria-label="Select subscription" />
+        <div>Tool / Vendor</div>
+        <div>Owner</div>
+        <div>Cost</div>
+        <div>Renews</div>
+        <div>Seats / Utilisation</div>
+        <div>Risk</div>
+        <div>Approval</div>
+        <div>Status</div>
+        <div aria-label="Actions" />
+      </div>
 
-            return (
-              <tr
-                className={[
-                  'subscription-table__row',
-                  subscription.renewalRisk === 'high' ? 'subscription-table__row--high-risk' : '',
-                ].join(' ')}
-                key={subscription.id}
-                onClick={() => onOpenDetail?.(subscription)}
-              >
-                <td>
-                  <input
-                    aria-label={`Select ${subscription.toolName}`}
-                    className="subscription-table__checkbox"
-                    onClick={(event) => event.stopPropagation()}
-                    type="checkbox"
-                  />
-                </td>
-                <td>
-                  <div className="table-tool-cell">
-                    <span className="tool-avatar" aria-hidden="true">
-                      {subscription.toolName.charAt(0)}
-                    </span>
-                    <div>
-                      <strong>{subscription.toolName}</strong>
-                      <span>{subscription.vendorName} · {subscription.category}</span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className="table-owner-cell">
-                    <span className="owner-avatar" aria-hidden="true">
-                      {getInitials(subscription.owner)}
-                    </span>
-                    <div>
-                      <strong>{subscription.owner}</strong>
-                      <span>{subscription.department}</span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className="table-cost-cell">
-                    <strong>{formatCurrency(subscription.monthlyCost)}</strong>
-                    <span>{subscription.billingCycle}</span>
-                  </div>
-                </td>
-                <td>
-                  <div className="table-renewal-cell">
-                    <strong>{formatDate(subscription.renewalDate)}</strong>
-                    <span className={renewalSoon ? 'table-renewal-cell__soon' : ''}>
-                      {daysUntilRenewal >= 0 ? `in ${daysUntilRenewal}d` : `${Math.abs(daysUntilRenewal)}d ago`}
-                    </span>
-                  </div>
-                </td>
-                <td>
-                  <div className="table-usage-cell">
-                    <div>
-                      <span>{subscription.activeUsers} / {subscription.seatsPurchased} active</span>
-                      <strong className={lowUtilisation ? 'table-usage-cell__low' : ''}>{utilisation}%</strong>
-                    </div>
-                    <span className="usage-bar" aria-hidden="true">
-                      <span style={{ width: `${Math.min(utilisation, 100)}%` }} />
-                    </span>
-                  </div>
-                </td>
-                <td>
-                  <RiskBadge risk={subscription.renewalRisk} />
-                </td>
-                <td>
-                  <StatusBadge status={subscription.approvalStatus} />
-                </td>
-                <td>
-                  <StatusBadge status={subscription.status} />
-                </td>
-                <td>
-                  <button
-                    className="table-action-button"
-                    onClick={(event) => event.stopPropagation()}
-                    type="button"
-                    aria-label={`Open actions for ${subscription.toolName}`}
-                  >
-                    ...
-                  </button>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+      <div className="subscription-table-body">
+        {subscriptions.map((subscription) => {
+          const utilisation = getUtilisation(subscription)
+          const daysRemaining = daysUntilRenewal(subscription.renewalDate)
+          const lowUtilisation = utilisation < 60
+          const urgentRenewal = daysRemaining <= 14
+
+          return (
+            <div
+              className="subscription-grid subscription-grid--row"
+              key={subscription.id}
+              onClick={() => onOpenDetail?.(subscription)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  onOpenDetail?.(subscription)
+                }
+              }}
+              role="button"
+              tabIndex={0}
+            >
+              <span className="subscription-checkbox-cell" onClick={(event) => event.stopPropagation()}>
+                <input
+                  aria-label={`Select ${subscription.toolName}`}
+                  className="subscription-table__checkbox"
+                  type="checkbox"
+                />
+              </span>
+
+              <span className="subscription-tool-cell">
+                <span className="subscription-tool-icon" aria-hidden="true">
+                  {subscription.toolName.charAt(0)}
+                </span>
+                <span>
+                  <strong>{subscription.toolName}</strong>
+                  <small>{subscription.vendorName} · {subscription.category}</small>
+                </span>
+              </span>
+
+              <span className="subscription-owner-cell">
+                <span className="subscription-owner-avatar" aria-hidden="true">
+                  {getInitials(subscription.owner)}
+                </span>
+                <span>
+                  <strong>{subscription.owner}</strong>
+                  <small>{subscription.department}</small>
+                </span>
+              </span>
+
+              <span className="subscription-cost-cell">
+                <strong>{formatCurrency(subscription.monthlyCost)}</strong>
+                <small>{labelFromValue(subscription.billingCycle)} billing</small>
+              </span>
+
+              <span className="subscription-renewal-cell">
+                <strong>{formatDate(subscription.renewalDate)}</strong>
+                <small className={urgentRenewal ? 'subscription-renewal-cell__urgent' : ''}>
+                  {daysRemaining >= 0 ? `in ${daysRemaining}d` : `${Math.abs(daysRemaining)}d ago`}
+                </small>
+              </span>
+
+              <span className="subscription-usage-cell">
+                <span>
+                  <small>
+                    {subscription.activeUsers} / {subscription.seatsPurchased} active
+                  </small>
+                  <strong className={lowUtilisation ? 'subscription-usage-cell__low' : ''}>
+                    {utilisation}%
+                  </strong>
+                </span>
+                <span
+                  className={`subscription-usage-bar${lowUtilisation ? ' subscription-usage-bar--low' : ''}`}
+                  aria-hidden="true"
+                >
+                  <span style={{ width: `${Math.min(utilisation, 100)}%` }} />
+                </span>
+              </span>
+
+              <span className="subscription-badge-cell">
+                <RiskBadge risk={subscription.renewalRisk} />
+              </span>
+              <span className="subscription-badge-cell">
+                <StatusBadge status={subscription.approvalStatus} />
+              </span>
+              <span className="subscription-badge-cell">
+                <StatusBadge status={subscription.status} />
+              </span>
+              <span className="subscription-action-cell">
+                <span aria-hidden="true">...</span>
+              </span>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

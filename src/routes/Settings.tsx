@@ -42,22 +42,22 @@ function Settings() {
             Settings
           </h2>
           <p className="dashboard__subtitle">
-            Manage company preferences, renewal alerts, approval rules, and team roles.
+            Configure company preferences, renewal alerts, approval rules, and team roles.
           </p>
         </div>
         <div className="dashboard__actions">
-          <button
-            type="button"
-            onClick={() => showConfirmation('Settings saved for this mock workflow.')}
-          >
-            Save changes
-          </button>
           <button
             className="button-secondary"
             type="button"
             onClick={() => showConfirmation('Settings reset to the previous mock values.')}
           >
-            Reset changes
+            Discard
+          </button>
+          <button
+            type="button"
+            onClick={() => showConfirmation('Settings saved for this mock workflow.')}
+          >
+            Save changes
           </button>
         </div>
       </div>

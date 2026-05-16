@@ -62,7 +62,7 @@ select:focus-visible,
 a:focus-visible,
 [tabindex]:focus-visible {
   outline: var(--border-focus);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
 button:disabled {
@@ -90,6 +90,12 @@ input::placeholder {
 input:hover,
 select:hover {
   border-color: var(--color-slate-300);
+}
+
+input:focus-visible,
+select:focus-visible {
+  border-color: var(--color-slate-400);
+  box-shadow: 0 0 0 3px rgb(148 163 184 / 0.22);
 }
 
 select {

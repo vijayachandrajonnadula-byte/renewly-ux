@@ -61,26 +61,27 @@ function Reports() {
     <section className="reports-page" aria-labelledby="reports-title">
       <div className="dashboard__header">
         <div>
+          <p className="page-kicker">Monthly report · May 2026</p>
           <h2 className="dashboard__title" id="reports-title">
-            Reports
+            SaaS spend & renewals · May report
           </h2>
           <p className="dashboard__subtitle">
-            Summarise spend, renewals, approvals, and estimated savings for finance review.
+            Generated 12 min ago · 24 tools · 8 departments. Mock data — for portfolio demonstration.
           </p>
         </div>
         <div className="dashboard__actions">
-          <button
-            type="button"
-            onClick={() => setConfirmationMessage('Report download prepared for this mock workflow.')}
-          >
-            Download report
-          </button>
           <button
             className="button-secondary"
             type="button"
             onClick={() => setConfirmationMessage('Report summary copied for this mock workflow.')}
           >
             Copy summary
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfirmationMessage('Report download prepared for this mock workflow.')}
+          >
+            Download report
           </button>
         </div>
       </div>
@@ -119,6 +120,8 @@ function Reports() {
         />
       </div>
 
+      <div className="report-workspace">
+        <div className="report-main-column">
       <section className="card report-document" aria-labelledby="monthly-report-title">
         <div className="section-heading section-heading--padded">
           <div>
@@ -194,6 +197,8 @@ function Reports() {
         </div>
       </section>
 
+        </div>
+
       <section className="report-lists" aria-label="Important report items">
         <article className="card report-list-card">
           <div className="section-heading section-heading--padded">
@@ -255,6 +260,7 @@ function Reports() {
           </div>
         </article>
       </section>
+      </div>
     </section>
   )
 }

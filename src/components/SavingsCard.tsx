@@ -49,9 +49,11 @@ function SavingsCard({ onAction, opportunity, usageSignal }: SavingsCardProps) {
           <strong>{formatCurrency(opportunity.estimatedAnnualSavings)}</strong>
         </div>
       </div>
-      <p className="savings-card__label">Reason</p>
-      <p className="savings-card__body">{opportunity.reason}</p>
-      {usageSignal ? <p className="savings-card__body">Based on mock usage data: {usageSignal}</p> : null}
+      <div className="savings-card__reason">
+        <span>Reason</span>
+        <p>{opportunity.reason}</p>
+        {usageSignal ? <small>Based on mock usage data: {usageSignal}</small> : null}
+      </div>
       <div className="savings-card__recommendation">
         <span>Recommended</span>
         <strong>{opportunity.recommendedAction}</strong>
@@ -63,21 +65,21 @@ function SavingsCard({ onAction, opportunity, usageSignal }: SavingsCardProps) {
             type="button"
             onClick={() => onAction('Opportunity marked for review in this mock workflow.')}
           >
-            Review opportunity
+            Review with owner
           </button>
           <button
             className="button-secondary"
             type="button"
             onClick={() => onAction('Owner confirmation requested.')}
           >
-            Request owner confirmation
+            Dismiss
           </button>
           <button
             className="button-secondary"
             type="button"
             onClick={() => onAction('Opportunity marked as reviewed.')}
           >
-            Mark as reviewed
+            Open tool ↗
           </button>
         </div>
       ) : null}

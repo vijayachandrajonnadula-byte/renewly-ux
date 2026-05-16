@@ -37,7 +37,7 @@ function Savings() {
   const [typeFilter, setTypeFilter] = useState<SavingsOpportunityType | 'all'>('all')
   const [confidenceFilter, setConfidenceFilter] = useState<SavingsConfidence | 'all'>('all')
   const [riskFilter, setRiskFilter] = useState<RenewalRisk | 'all'>('all')
-  const [sortOrder, setSortOrder] = useState<SavingsSort>('default')
+  const [sortOrder, setSortOrder] = useState<SavingsSort>('highest')
   const [confirmationMessage, setConfirmationMessage] = useState('')
 
   const filteredOpportunities = useMemo(() => {
@@ -62,7 +62,7 @@ function Savings() {
     setTypeFilter('all')
     setConfidenceFilter('all')
     setRiskFilter('all')
-    setSortOrder('default')
+    setSortOrder('highest')
   }
 
   const estimatedMonthlySavings = savingsOpportunities.reduce(
@@ -78,7 +78,7 @@ function Savings() {
   ).length
 
   return (
-    <section className="savings-page" aria-labelledby="savings-title">
+    <section className="savings-page reference-savings" aria-labelledby="savings-title">
       <div className="dashboard__header">
         <div>
           <h2 className="dashboard__title" id="savings-title">
@@ -87,14 +87,16 @@ function Savings() {
           <p className="dashboard__subtitle">
             Estimated savings — based on mock usage data. Review with owner before applying.
           </p>
-          <p className="page-note">All values are estimates labelled as potential savings — not realised.</p>
+          <p className="page-note">
+            All values are estimates labelled as potential savings — not realised.
+          </p>
         </div>
         <div className="dashboard__actions">
           <button className="button-secondary" type="button">
             Export list
           </button>
           <button type="button" onClick={() => setSortOrder('highest')}>
-            ✓ Apply selected (2)
+            Apply selected (2)
           </button>
         </div>
       </div>
@@ -103,34 +105,34 @@ function Savings() {
 
       <div className="summary-strip" aria-label="Savings summary">
         <MetricCard
-          helper="Mock estimated monthly potential"
-          label="Estimated monthly savings"
+          helper="+12% vs Apr across opportunities"
+          label="Est. monthly savings"
           tone="success"
           value={formatCurrency(estimatedMonthlySavings)}
         />
         <MetricCard
-          helper="Mock estimated annual potential"
-          label="Estimated annual savings"
+          helper="if all applied"
+          label="Est. annual savings"
           tone="success"
           value={formatCurrency(estimatedAnnualSavings)}
         />
         <MetricCard
-          helper="Opportunities in mock data"
+          helper="from 24 tools"
           label="Opportunities found"
           tone="primary"
           value={String(savingsOpportunities.length)}
         />
         <MetricCard
-          helper="Marked high confidence"
-          label="High-confidence opportunities"
+          helper="ready to review"
+          label="High-confidence"
           value={String(highConfidenceCount)}
         />
       </div>
 
-      <section className="filter-panel" aria-label="Savings filters">
-        <div className="filter-grid savings-filter-grid">
-          <label className="filter-field">
-            <span>Opportunity type</span>
+      <section className="reference-filterbar reference-filterbar--savings" aria-label="Savings filters">
+        <div className="reference-filterbar__chips">
+          <label className="filter-chip-field filter-chip-field--wide">
+            <span>Type</span>
             <select
               onChange={(event) =>
                 setTypeFilter(event.target.value as SavingsOpportunityType | 'all')
@@ -145,7 +147,7 @@ function Savings() {
               ))}
             </select>
           </label>
-          <label className="filter-field">
+          <label className="filter-chip-field filter-chip-field--wide">
             <span>Confidence</span>
             <select
               onChange={(event) =>
@@ -153,7 +155,7 @@ function Savings() {
               }
               value={confidenceFilter}
             >
-              <option value="all">All confidence</option>
+              <option value="all">Any</option>
               {confidenceLevels.map((confidence) => (
                 <option key={confidence} value={confidence}>
                   {labelFromValue(confidence)}
@@ -161,13 +163,13 @@ function Savings() {
               ))}
             </select>
           </label>
-          <label className="filter-field">
-            <span>Risk level</span>
+          <label className="filter-chip-field filter-chip-field--wide">
+            <span>Risk</span>
             <select
               onChange={(event) => setRiskFilter(event.target.value as RenewalRisk | 'all')}
               value={riskFilter}
             >
-              <option value="all">All risk levels</option>
+              <option value="all">Low + medium</option>
               {riskLevels.map((risk) => (
                 <option key={risk} value={risk}>
                   {labelFromValue(risk)}
@@ -175,20 +177,17 @@ function Savings() {
               ))}
             </select>
           </label>
-          <label className="filter-field">
-            <span>Sort</span>
-            <select
-              onChange={(event) => setSortOrder(event.target.value as SavingsSort)}
-              value={sortOrder}
-            >
-              <option value="default">Default order</option>
-              <option value="highest">Highest savings first</option>
-            </select>
-          </label>
-          <button className="button-secondary filter-reset" onClick={clearFilters} type="button">
-            Clear filters
-          </button>
         </div>
+        <label className="filter-chip-field filter-chip-field--sort">
+          <span>Sort</span>
+          <select
+            onChange={(event) => setSortOrder(event.target.value as SavingsSort)}
+            value={sortOrder}
+          >
+            <option value="highest">Highest savings first</option>
+            <option value="default">Default order</option>
+          </select>
+        </label>
       </section>
 
       {filteredOpportunities.length > 0 ? (

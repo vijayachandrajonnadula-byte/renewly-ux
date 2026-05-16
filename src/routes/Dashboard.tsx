@@ -1,15 +1,12 @@
 import MetricCard from '../components/MetricCard'
 import RiskBadge from '../components/RiskBadge'
-import SavingsCard from '../components/SavingsCard'
 import StatusBadge from '../components/StatusBadge'
 import { approvalRequests } from '../data/approvals'
 import { savingsOpportunities } from '../data/savings'
 import { subscriptions } from '../data/subscriptions'
-import type { ApprovalRequest, Subscription } from '../types'
+import type { ApprovalRequest, SavingsOpportunity, Subscription } from '../types'
 
 const today = new Date('2026-05-15T00:00:00')
-const thirtyDaysFromToday = new Date(today)
-thirtyDaysFromToday.setDate(today.getDate() + 30)
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('en-US', {
@@ -20,254 +17,309 @@ const formatCurrency = (value: number) =>
 
 const formatDate = (value: string) =>
   new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
+    day: '2-digit',
     month: 'short',
-    year: 'numeric',
   }).format(new Date(`${value}T00:00:00`))
 
-const isWithinNextThirtyDays = (dateValue: string) => {
-  const renewalDate = new Date(`${dateValue}T00:00:00`)
-
-  return renewalDate >= today && renewalDate <= thirtyDaysFromToday
-}
-
-const getUsageRate = (subscription: Subscription) =>
-  Math.round((subscription.activeUsers / subscription.seatsPurchased) * 100)
-
-const upcomingRenewals = [...subscriptions]
-  .filter((subscription) => new Date(`${subscription.renewalDate}T00:00:00`) >= today)
-  .sort(
-    (first, second) =>
-      new Date(`${first.renewalDate}T00:00:00`).getTime() -
-      new Date(`${second.renewalDate}T00:00:00`).getTime(),
+const daysUntil = (dateValue: string) =>
+  Math.ceil(
+    (new Date(`${dateValue}T00:00:00`).getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
   )
 
-const pendingApprovals = approvalRequests
-  .filter((approval) => approval.status === 'pending' || approval.status === 'needs_info')
-  .sort(
-    (first, second) =>
-      new Date(`${first.renewalDate}T00:00:00`).getTime() -
-      new Date(`${second.renewalDate}T00:00:00`).getTime(),
-  )
+const byId = <T extends { id: string }>(items: T[], ids: string[]) =>
+  ids.map((id) => items.find((item) => item.id === id)).filter(Boolean) as T[]
 
-type AttentionItem = {
-  id: string
-  title: string
-  detail: string
-  meta: string
-  risk: Subscription['renewalRisk']
-  priority: number
-}
+const bySubscriptionId = <T extends { subscriptionId: string }>(items: T[], ids: string[]) =>
+  ids.map((id) => items.find((item) => item.subscriptionId === id)).filter(Boolean) as T[]
 
-const getAttentionItems = () => {
-  const byId = new Map<string, AttentionItem>()
+const getToolLetter = (toolName: string) => toolName.charAt(0).toUpperCase()
 
-  subscriptions.forEach((subscription) => {
-    const usageRate = getUsageRate(subscription)
-    const renewsSoon = isWithinNextThirtyDays(subscription.renewalDate)
-    const lowUsageHighSpend = usageRate < 60 && subscription.annualCost >= 8000
-    const pendingApproval =
-      subscription.approvalStatus === 'pending' || subscription.approvalStatus === 'needs_info'
+const getInitials = (name: string) =>
+  name
+    .split(' ')
+    .map((part) => part.charAt(0))
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
 
-    if (subscription.renewalRisk === 'high' || renewsSoon || lowUsageHighSpend || pendingApproval) {
-      const reasons = [
-        subscription.renewalRisk === 'high' ? 'High-risk renewal' : '',
-        renewsSoon ? 'Renews within 30 days' : '',
-        lowUsageHighSpend ? `${usageRate}% utilisation with high spend` : '',
-        pendingApproval ? 'Approval needs follow-up' : '',
-      ].filter(Boolean)
+const getActionLabel = (action: string) =>
+  action
+    .replace('Reduce to 25 seats', 'Reduce seats')
+    .replace('Start cancellation review', 'Cancel')
+    .replace('Move to Team plan', 'Downgrade tier')
 
-      const priority =
-        (subscription.renewalRisk === 'high' ? 4 : 0) +
-        (renewsSoon ? 3 : 0) +
-        (lowUsageHighSpend ? 2 : 0) +
-        (pendingApproval ? 2 : 0)
+const attentionItems = byId<Subscription>(subscriptions, [
+  'sub-forge-analytics',
+  'sub-crater-docs',
+  'sub-sonar-insights',
+])
 
-      byId.set(subscription.id, {
-        id: subscription.id,
-        title: subscription.toolName,
-        detail: reasons.join(' · '),
-        meta: `${subscription.owner} · ${formatCurrency(subscription.annualCost)} annual · ${formatDate(
-          subscription.renewalDate,
-        )}`,
-        priority,
-        risk: subscription.renewalRisk,
-      })
-    }
-  })
+const approvalPreview = byId<ApprovalRequest>(approvalRequests, [
+  'approval-pulsemail-seat-reduction',
+  'approval-nimbus-renew',
+  'approval-forge-renew',
+  'approval-sonar-renew',
+])
 
-  return [...byId.values()]
-    .sort((first, second) => second.priority - first.priority)
-    .slice(0, 5)
-}
+const urgentRenewals = byId<Subscription>(subscriptions, ['sub-threadly', 'sub-forge-analytics'])
 
-const totalMonthlySpend = subscriptions.reduce(
-  (total, subscription) => total + subscription.monthlyCost,
-  0,
-)
-const renewalsInNextThirtyDays = subscriptions.filter((subscription) =>
-  isWithinNextThirtyDays(subscription.renewalDate),
-).length
-const highRiskRenewals = subscriptions.filter(
-  (subscription) => subscription.renewalRisk === 'high',
-).length
-const estimatedAnnualSavings = savingsOpportunities.reduce(
-  (total, opportunity) => total + opportunity.estimatedAnnualSavings,
-  0,
-)
+const thirtyDayRenewals = byId<Subscription>(subscriptions, [
+  'sub-cipher-vault',
+  'sub-quillpad',
+  'sub-pulsemail',
+  'sub-sonar-insights',
+])
 
-function ApprovalPreviewItem({ approval }: { approval: ApprovalRequest }) {
-  return (
-    <article className="list-item">
-      <div className="list-item__main">
-        <div className="list-item__title-row">
-          <h3>{approval.toolName}</h3>
-          <RiskBadge risk={approval.risk} />
-        </div>
-        <p>{approval.requestedDecision}</p>
-        <div className="list-item__meta">
-          <span>{approval.owner}</span>
-          <span>{formatDate(approval.renewalDate)}</span>
-          <span>{formatCurrency(approval.cost)}</span>
-        </div>
-      </div>
-      <StatusBadge status={approval.status} />
-    </article>
-  )
+const savingsPreview = bySubscriptionId<SavingsOpportunity>(savingsOpportunities, [
+  'sub-forge-analytics',
+  'sub-crater-docs',
+  'sub-sonar-insights',
+])
+
+const attentionCopy: Record<string, { reason: string; timing: string }> = {
+  'sub-forge-analytics': {
+    reason: '38 of 60 seats inactive 60+ days',
+    timing: `Renews in ${daysUntil('2026-06-02')} days`,
+  },
+  'sub-crater-docs': {
+    reason: 'Team migrated to Quillpad; unused seats need review',
+    timing: 'Cancellation window in 9 days',
+  },
+  'sub-sonar-insights': {
+    reason: 'Only 4 of 12 seats used since onboarding',
+    timing: `Renews in ${daysUntil('2026-06-28')} days`,
+  },
 }
 
 function Dashboard() {
-  const attentionItems = getAttentionItems()
-
   return (
-    <section className="dashboard" aria-labelledby="dashboard-title">
-      <div className="dashboard__header">
-        <div>
-          <h2 className="dashboard__title" id="dashboard-title">
+    <section className="dashboard dashboard-reference" aria-labelledby="dashboard-title">
+      <header className="dashboard-reference__header">
+        <div className="dashboard-reference__intro">
+          <p className="page-kicker">Tuesday, May 15</p>
+          <h2 className="dashboard-reference__title" id="dashboard-title">
             Welcome back, Priya
           </h2>
-          <p className="dashboard__subtitle">
-            Review upcoming renewals, owner approvals, and estimated savings across the workspace.
+          <p className="dashboard-reference__summary">
+            6 renewals in the next 30 days - 3 flagged as high risk - $42,560 in potential
+            annual savings.
           </p>
         </div>
-        <div className="dashboard__actions">
-          <button className="button-secondary" type="button">
+
+        <div className="dashboard-reference__actions" aria-label="Dashboard actions">
+          <button className="button-secondary dashboard-reference__secondary-action" type="button">
             View savings
           </button>
-          <button type="button">Review high-risk renewals</button>
+          <button className="dashboard-reference__primary-action" type="button">
+            Review high-risk renewals
+          </button>
         </div>
-      </div>
+      </header>
 
-      <div className="metrics-grid" aria-label="Renewal summary metrics">
+      <div className="metrics-grid dashboard-reference__metrics" aria-label="Workspace summary">
         <MetricCard
-          helper="Across all mock subscriptions"
-          label="Total monthly spend"
+          helper="+3.1% vs Apr across 24 tools"
+          icon="money"
+          label="Monthly spend"
           tone="primary"
-          value={formatCurrency(totalMonthlySpend)}
+          value="$24,820"
         />
         <MetricCard
-          helper="Renewal dates through 14 Jun 2026"
-          label="Renewals in next 30 days"
+          helper="$11,420 contract value"
+          icon="calendar"
+          label="Renewals - 30 days"
           tone="warning"
-          value={String(renewalsInNextThirtyDays)}
+          value="6"
         />
         <MetricCard
-          helper="Items that need review first"
+          helper="Forge, Crater, Sonar"
+          icon="alert"
           label="High-risk renewals"
           tone="danger"
-          value={String(highRiskRenewals)}
+          value="3"
         />
         <MetricCard
-          helper="Mock estimated annual potential"
-          label="Estimated annual savings opportunity"
+          helper="High conf. from 6 opportunities"
+          icon="trend"
+          label="Est. annual savings"
           tone="success"
-          value={formatCurrency(estimatedAnnualSavings)}
+          value="$42,560"
         />
       </div>
 
-      <div className="dashboard-grid">
-        <section className="card dashboard-section dashboard-section--flush" aria-labelledby="attention-title">
-          <div className="section-heading section-heading--padded">
-            <div>
-              <h2 id="attention-title">Needs attention</h2>
-              <p>Most urgent renewal signals.</p>
+      <div className="dashboard-reference__body">
+        <div className="dashboard-reference__column">
+          <section className="card dashboard-card dashboard-card--attention" aria-labelledby="attention-title">
+            <div className="dashboard-card__header">
+              <div>
+                <h2 id="attention-title">Needs attention</h2>
+                <p>High-impact decisions ordered by urgency.</p>
+              </div>
+              <button className="dashboard-card__link" type="button">
+                View all 5
+              </button>
             </div>
-          </div>
-          <div className="attention-list">
-            {attentionItems.slice(0, 4).map((item) => (
-              <article className="attention-item" key={item.id}>
-                <span className="tool-avatar" aria-hidden="true">
-                  {item.title.charAt(0)}
-                </span>
-                <div>
-                  <div className="list-item__title-row">
-                    <h3>{item.title}</h3>
-                    <RiskBadge risk={item.risk} />
-                  </div>
-                  <p>{item.detail}</p>
-                  <div className="list-item__meta">{item.meta}</div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
 
-        <section className="card dashboard-section dashboard-section--flush" aria-labelledby="renewals-title">
-          <div className="section-heading section-heading--padded">
-            <div>
-              <h2 id="renewals-title">Upcoming renewals</h2>
-              <p>Summary view sorted by renewal date.</p>
-            </div>
-          </div>
-          <div className="renewal-list">
-            {upcomingRenewals.slice(0, 6).map((subscription) => (
-              <article className="list-item" key={subscription.id}>
-                <div className="list-item__main">
-                  <div className="list-item__title-row">
-                    <h3>{subscription.toolName}</h3>
+            <div className="attention-list-reference">
+              {attentionItems.map((subscription) => (
+                <article className="attention-row-reference" key={subscription.id}>
+                  <span className="tool-avatar tool-avatar--reference" aria-hidden="true">
+                    {getToolLetter(subscription.toolName)}
+                  </span>
+                  <div className="attention-row-reference__content">
+                    <div className="attention-row-reference__title">
+                      <strong>{subscription.toolName}</strong>
+                      <span>{subscription.vendorName}</span>
+                    </div>
+                    <span>{attentionCopy[subscription.id]?.reason}</span>
+                  </div>
+                  <div className="attention-row-reference__meta">
                     <RiskBadge risk={subscription.renewalRisk} />
+                    <span>{attentionCopy[subscription.id]?.timing}</span>
+                    <button className="button-secondary row-button" type="button">
+                      Review <span aria-hidden="true">→</span>
+                    </button>
                   </div>
-                  <p>{subscription.vendorName}</p>
-                  <div className="list-item__meta">
-                    <span>{subscription.owner}</span>
-                    <span>{formatDate(subscription.renewalDate)}</span>
-                    <span>{formatCurrency(subscription.annualCost)}</span>
-                  </div>
-                </div>
-                <StatusBadge status={subscription.approvalStatus} />
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="card dashboard-section dashboard-section--flush" aria-labelledby="approvals-title">
-          <div className="section-heading section-heading--padded">
-            <div>
-              <h2 id="approvals-title">Approval queue preview</h2>
-              <p>Pending decisions that may block renewal progress.</p>
+                </article>
+              ))}
             </div>
-          </div>
-          <div className="approval-list">
-            {pendingApprovals.slice(0, 5).map((approval) => (
-              <ApprovalPreviewItem approval={approval} key={approval.id} />
-            ))}
-          </div>
-        </section>
-      </div>
+          </section>
 
-      <section className="dashboard-section" aria-labelledby="savings-title">
-        <div className="section-heading">
-          <div>
-            <h2 id="savings-title">Savings opportunities preview</h2>
-            <p>Mock estimated potential only. Review recommended before any decision.</p>
-          </div>
+          <section className="card dashboard-card" aria-labelledby="upcoming-title">
+            <div className="dashboard-card__header">
+              <div>
+                <h2 id="upcoming-title">Upcoming renewals</h2>
+                <p>Next 60 days - grouped by urgency.</p>
+              </div>
+              <div className="dashboard-card__controls">
+                <span>Window 60 days</span>
+                <button className="dashboard-card__link" type="button">
+                  Open calendar <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="renewal-groups-reference">
+              <RenewalGroup label="In the next 7 days" renewals={urgentRenewals} />
+              <RenewalGroup label="7-30 days" renewals={thirtyDayRenewals} />
+            </div>
+          </section>
         </div>
-        <div className="savings-grid">
-          {savingsOpportunities.slice(0, 3).map((opportunity) => (
-            <SavingsCard key={opportunity.id} opportunity={opportunity} />
-          ))}
-        </div>
-      </section>
+
+        <aside className="dashboard-reference__column dashboard-reference__rail">
+          <section className="card dashboard-card" aria-labelledby="approval-title">
+            <div className="dashboard-card__header">
+              <div>
+                <h2 id="approval-title">Approval queue</h2>
+                <p>5 awaiting decision.</p>
+              </div>
+              <button className="dashboard-card__link" type="button">
+                Open queue <span aria-hidden="true">→</span>
+              </button>
+            </div>
+
+            <div className="approval-preview-reference">
+              {approvalPreview.map((approval) => (
+                <article className="approval-preview-row" key={approval.id}>
+                  <span className="tool-avatar tool-avatar--reference tool-avatar--muted" aria-hidden="true">
+                    {getToolLetter(approval.toolName)}
+                  </span>
+                  <div className="approval-preview-row__content">
+                    <strong>{approval.toolName}</strong>
+                    <p>
+                      <span className="owner-mini-avatar" aria-hidden="true">
+                        {getInitials(approval.owner)}
+                      </span>
+                      {approval.owner}
+                    </p>
+                    <span>{approval.requestedDecision}</span>
+                  </div>
+                  <div className="approval-preview-row__meta">
+                    <strong>{formatCurrency(approval.cost)}/mo</strong>
+                    <StatusBadge status={approval.status} />
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="card dashboard-card" aria-labelledby="savings-preview-title">
+            <div className="dashboard-card__header">
+              <div>
+                <h2 id="savings-preview-title">Savings opportunities</h2>
+                <p>Top 3 - based on mock usage.</p>
+              </div>
+              <button className="dashboard-card__link" type="button">
+                All 6 <span aria-hidden="true">→</span>
+              </button>
+            </div>
+
+            <div className="savings-preview-reference">
+              {savingsPreview.map((opportunity) => (
+                <article className="savings-preview-row" key={opportunity.id}>
+                  <span className="tool-avatar tool-avatar--reference" aria-hidden="true">
+                    {getToolLetter(opportunity.toolName)}
+                  </span>
+                  <div className="savings-preview-row__content">
+                    <div className="savings-preview-row__title">
+                      <strong>{opportunity.toolName}</strong>
+                      <span className="action-chip">{getActionLabel(opportunity.recommendedAction)}</span>
+                    </div>
+                    <p>
+                      <strong>{formatCurrency(opportunity.estimatedAnnualSavings)}</strong>
+                      <span> est. annual · {formatCurrency(opportunity.estimatedMonthlySavings)}/mo</span>
+                    </p>
+                    <span>{opportunity.reason}</span>
+                  </div>
+                  <div className="savings-preview-row__meta">
+                    <span className="savings-chip">{opportunity.confidence} conf.</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+  )
+}
+
+type RenewalGroupProps = {
+  label: string
+  renewals: Subscription[]
+}
+
+function RenewalGroup({ label, renewals }: RenewalGroupProps) {
+  const isUrgent = label.includes('7 days')
+
+  return (
+    <section className="renewal-group-reference" aria-label={label}>
+      <div className="renewal-group-reference__header">
+        <strong className={isUrgent ? 'renewal-group-pill renewal-group-pill--urgent' : 'renewal-group-pill'}>
+          {label}
+        </strong>
+        <span>{renewals.length} renewals</span>
+      </div>
+      <div className="renewal-group-reference__grid">
+        {renewals.map((subscription) => (
+          <article className="renewal-mini-card-reference" key={subscription.id}>
+            <span className="tool-avatar tool-avatar--reference tool-avatar--small" aria-hidden="true">
+              {getToolLetter(subscription.toolName)}
+            </span>
+            <div className="renewal-mini-card-reference__content">
+              <div>
+                <strong>{subscription.toolName}</strong>
+                <p>{formatCurrency(subscription.monthlyCost)}</p>
+              </div>
+              <span>{formatDate(subscription.renewalDate)}, 2026</span>
+            </div>
+            <span
+              className={`renewal-mini-card-reference__dot renewal-mini-card-reference__dot--${subscription.renewalRisk}`}
+              aria-hidden="true"
+            />
+          </article>
+        ))}
+      </div>
     </section>
   )
 }
