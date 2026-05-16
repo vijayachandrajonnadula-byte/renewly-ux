@@ -52,10 +52,10 @@ function SubscriptionTable({ onOpenDetail, subscriptions }: SubscriptionTablePro
       <div className="subscription-grid subscription-grid--header" role="row">
         <div aria-label="Select subscription" />
         <div>Tool / Vendor</div>
-        <div>Owner</div>
-        <div>Cost</div>
+        <div>Owner · Department</div>
+        <div>Cost / Mo</div>
         <div>Renews</div>
-        <div>Seats / Utilisation</div>
+        <div>Seats · Utilisation</div>
         <div>Risk</div>
         <div>Approval</div>
         <div>Status</div>
@@ -66,8 +66,8 @@ function SubscriptionTable({ onOpenDetail, subscriptions }: SubscriptionTablePro
         {subscriptions.map((subscription) => {
           const utilisation = getUtilisation(subscription)
           const daysRemaining = daysUntilRenewal(subscription.renewalDate)
-          const lowUtilisation = utilisation < 60
-          const urgentRenewal = daysRemaining <= 14
+          const lowUtilisation = utilisation < 50
+          const urgentRenewal = daysRemaining <= 21
 
           return (
             <div
@@ -93,7 +93,7 @@ function SubscriptionTable({ onOpenDetail, subscriptions }: SubscriptionTablePro
 
               <span className="subscription-tool-cell">
                 <span className="subscription-tool-icon" aria-hidden="true">
-                  {subscription.toolName.charAt(0)}
+                  {subscription.toolName.charAt(0).toUpperCase()}
                 </span>
                 <span>
                   <strong>{subscription.toolName}</strong>
@@ -113,7 +113,7 @@ function SubscriptionTable({ onOpenDetail, subscriptions }: SubscriptionTablePro
 
               <span className="subscription-cost-cell">
                 <strong>{formatCurrency(subscription.monthlyCost)}</strong>
-                <small>{labelFromValue(subscription.billingCycle)} billing</small>
+                <small>{labelFromValue(subscription.billingCycle)}</small>
               </span>
 
               <span className="subscription-renewal-cell">
@@ -126,7 +126,7 @@ function SubscriptionTable({ onOpenDetail, subscriptions }: SubscriptionTablePro
               <span className="subscription-usage-cell">
                 <span>
                   <small>
-                    {subscription.activeUsers} / {subscription.seatsPurchased} active
+                    {subscription.activeUsers} / {subscription.seatsPurchased}
                   </small>
                   <strong className={lowUtilisation ? 'subscription-usage-cell__low' : ''}>
                     {utilisation}%

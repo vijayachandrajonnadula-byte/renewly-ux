@@ -32,7 +32,7 @@ const statusTone: Record<ApprovalStatus | SubscriptionStatus, string> = {
 
 function StatusBadge({ status }: StatusBadgeProps) {
   return (
-    <span className={`badge status-badge status-badge--${statusTone[status]}`}>
+    <span className={`badge status-badge status-badge--${statusTone[status]} status-badge--${status}`}>
       {statusLabels[status]}
     </span>
   )
