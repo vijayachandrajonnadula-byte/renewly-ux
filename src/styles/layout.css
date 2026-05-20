@@ -423,9 +423,9 @@
   }
 
   .mobile-topbar {
-    position: sticky;
-    top: 0;
-    z-index: 50;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000;
     display: flex;
     min-height: 4.75rem;
     align-items: center;
@@ -527,7 +527,7 @@
   .app-shell__content {
     width: 100%;
     max-width: none !important;
-    padding: 1.25rem 1.25rem 7.5rem !important;
+    padding: 1.25rem 1.25rem calc(8rem + env(safe-area-inset-bottom)) !important;
     overflow-x: hidden;
   }
 

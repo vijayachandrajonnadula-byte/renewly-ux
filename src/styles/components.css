@@ -4937,6 +4937,288 @@
   }
 }
 
+@media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  .mobile-page,
+  .settings-page,
+  .dashboard-reference,
+  .subscriptions-page,
+  .renewal-calendar-reference,
+  .approval-reference-page,
+  .detail-reference {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .mobile-page-header h1,
+  .settings-mobile-header h1,
+  .dashboard-reference__title,
+  .subscriptions-header__title,
+  .renewal-calendar-header h2,
+  .approval-reference-header h2,
+  .dashboard__title {
+    color: #0f172a;
+    font-size: 2rem;
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-shadow: none !important;
+    -webkit-text-stroke: 0 !important;
+    filter: none !important;
+  }
+
+  .metric-card__icon,
+  .dashboard-reference__metrics .metric-card__icon,
+  .renewal-calendar-summary .metric-card__icon,
+  .approval-reference-summary .metric-card__icon,
+  .subscriptions-summary .metric-card__icon,
+  .reference-savings .summary-strip .metric-card__icon,
+  .reports-page .report-summary-grid .metric-card__icon,
+  .detail-reference-metrics .metric-card__icon {
+    display: none !important;
+  }
+
+  .settings-desktop-header,
+  .settings-desktop-layout {
+    display: none !important;
+  }
+
+  .settings-mobile-page {
+    display: grid;
+    gap: 1rem;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+
+  .settings-mobile-header {
+    overflow: visible;
+  }
+
+  .settings-mobile-actions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .settings-mobile-actions button {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.85rem;
+    padding: 0 0.75rem;
+    white-space: normal;
+  }
+
+  .settings-mobile-tabs {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding: 0.05rem 0 0.35rem;
+    scrollbar-width: none;
+  }
+
+  .settings-mobile-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .settings-mobile-tabs button {
+    flex: 0 0 auto;
+    min-height: 2.45rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    color: #334155;
+    background: #fff;
+    padding: 0 0.85rem;
+    font-size: 0.92rem;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .settings-mobile-tabs button.is-active,
+  .settings-mobile-tabs button[aria-current='page'] {
+    border-color: #334155;
+    color: #fff;
+    background: #334155;
+  }
+
+  .settings-mobile-stack {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .settings-mobile-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    background: #fff;
+    padding: 1rem;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    scroll-margin-top: 5.7rem;
+  }
+
+  .settings-mobile-card h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 1.18rem;
+    font-weight: 750;
+    line-height: 1.2;
+  }
+
+  .settings-mobile-card > p {
+    margin: 0.4rem 0 0;
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .settings-mobile-form {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1rem;
+  }
+
+  .settings-mobile-form label {
+    display: grid;
+    min-width: 0;
+    gap: 0.45rem;
+  }
+
+  .settings-mobile-form label > span {
+    color: #475569;
+    font-size: 0.76rem;
+    font-weight: 750;
+    letter-spacing: 0.05em;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+
+  .settings-mobile-form input,
+  .settings-mobile-form select {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    min-height: 2.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.75rem;
+    background: #fff;
+    color: #0f172a;
+    padding: 0 0.8rem;
+    font-size: 1rem;
+  }
+
+  .settings-mobile-form input:focus,
+  .settings-mobile-form select:focus {
+    outline: 0;
+    border-color: #94a3b8;
+    box-shadow: 0 0 0 3px rgb(148 163 184 / 0.18);
+  }
+
+  .settings-mobile-check {
+    display: grid !important;
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    align-items: start;
+    gap: 0.75rem !important;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.85rem;
+    background: #f8fafc;
+    padding: 0.85rem;
+  }
+
+  .settings-mobile-check input {
+    width: 1.05rem;
+    height: 1.05rem;
+    min-height: 0;
+    margin-top: 0.1rem;
+    accent-color: #334155;
+  }
+
+  .settings-mobile-check span {
+    min-width: 0;
+    color: #334155 !important;
+    font-size: 0.96rem !important;
+    font-weight: 650 !important;
+    letter-spacing: 0 !important;
+    line-height: 1.35;
+    text-transform: none !important;
+  }
+
+  .settings-mobile-roles {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .settings-mobile-role {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.85rem;
+    background: #fff;
+    padding: 0.85rem;
+  }
+
+  .settings-mobile-role h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 750;
+    line-height: 1.2;
+  }
+
+  .settings-mobile-role p {
+    margin: 0.25rem 0 0;
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .settings-mobile-role span {
+    display: block;
+    margin-top: 0.35rem;
+    color: #475569;
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  .settings-mobile-role button {
+    min-width: 4.2rem;
+    min-height: 2.45rem;
+    padding: 0 0.75rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .settings-mobile-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-mobile-role {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Savings Opportunities focused polish */
 .reference-savings {
   gap: 1rem;
