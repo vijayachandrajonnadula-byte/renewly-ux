@@ -3,6 +3,8 @@ import CalendarCard from '../components/CalendarCard'
 import EmptyState from '../components/EmptyState'
 import FilterDropdown from '../components/FilterDropdown'
 import MetricCard from '../components/MetricCard'
+import RiskBadge from '../components/RiskBadge'
+import StatusBadge from '../components/StatusBadge'
 import { subscriptions } from '../data/subscriptions'
 import type { Subscription } from '../types'
 
@@ -52,6 +54,25 @@ const getMonthLabel = (value: string) =>
     month: 'long',
     year: 'numeric',
   }).format(getDateFromString(value))
+
+const getShortDateParts = (value: string) => {
+  const [month, day] = new Intl.DateTimeFormat('en-US', {
+    day: '2-digit',
+    month: 'short',
+  })
+    .format(getDateFromString(value))
+    .split(' ')
+
+  return { day, month }
+}
+
+const getInitials = (name: string) =>
+  name
+    .split(' ')
+    .map((part) => part.charAt(0))
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
 
 const isPendingApproval = (subscription: Subscription) =>
   subscription.approvalStatus === 'pending' || subscription.approvalStatus === 'needs_info'
@@ -151,6 +172,101 @@ function RenewalCalendar() {
       className="renewal-calendar-page renewal-calendar-reference"
       aria-labelledby="renewal-calendar-title"
     >
+      <div className="mobile-page mobile-renewals" aria-label="Mobile renewals">
+        <header className="mobile-page-header">
+          <h1>Renewals</h1>
+          <p>4 next 30 days · 4 high-risk</p>
+          <button className="mobile-primary-button" type="button">
+            Export schedule
+          </button>
+        </header>
+
+        <section className="mobile-kpi-grid" aria-label="Renewal summary">
+          {[
+            ['Next 30d', String(renewalsInThirtyDays.length), 'near-term'],
+            ['Next 60d', String(renewalsInSixtyDays.length), 'planned'],
+            ['High risk', String(highRiskUpcoming.length), 'needs review'],
+            ['Spend', formatCurrency(upcomingRenewalSpend), '90 days'],
+          ].map(([label, value, helper]) => (
+            <article className="mobile-kpi-card" key={label}>
+              <span>{label}</span>
+              <strong>{value}</strong>
+              <small>{helper}</small>
+            </article>
+          ))}
+        </section>
+
+        <section className="mobile-filter-chip-row" aria-label="Renewal filters">
+          {([30, 60, 90] as RangeFilter[]).map((range) => (
+            <button
+              className={rangeFilter === range ? 'is-active' : ''}
+              key={range}
+              onClick={() => setRangeFilter(range)}
+              type="button"
+            >
+              {rangeLabels[range]}
+            </button>
+          ))}
+          <button
+            className={highRiskOnly ? 'is-active' : ''}
+            onClick={() => setHighRiskOnly((currentValue) => !currentValue)}
+            type="button"
+          >
+            High risk only
+          </button>
+          <button
+            className={pendingApprovalOnly ? 'is-active' : ''}
+            onClick={() => setPendingApprovalOnly((currentValue) => !currentValue)}
+            type="button"
+          >
+            Pending approval only
+          </button>
+        </section>
+
+        <div className="mobile-renewal-list">
+          {filteredRenewals.slice(0, 10).map((subscription) => {
+            const dateParts = getShortDateParts(subscription.renewalDate)
+
+            return (
+              <article className="mobile-renewal-card" key={subscription.id}>
+                <span
+                  className={`mobile-date-block${
+                    subscription.renewalRisk === 'high' ? ' mobile-date-block--risk' : ''
+                  }`}
+                  aria-hidden="true"
+                >
+                  <small>{dateParts.month}</small>
+                  <strong>{dateParts.day}</strong>
+                </span>
+                <div className="mobile-row-main">
+                  <div className="mobile-row-title">
+                    <strong>{subscription.toolName}</strong>
+                    <RiskBadge risk={subscription.renewalRisk} />
+                  </div>
+                  <p>
+                    {subscription.vendorName} · {subscription.category}
+                  </p>
+                  <small>
+                    <span className="mobile-mini-avatar" aria-hidden="true">
+                      {getInitials(subscription.owner)}
+                    </span>
+                    {subscription.owner}
+                  </small>
+                  <em>
+                    {formatCurrency(subscription.monthlyCost)}/mo · in{' '}
+                    {getDaysUntilRenewal(subscription)}d
+                  </em>
+                  <div className="mobile-card-badges">
+                    <StatusBadge status={subscription.approvalStatus} />
+                    <span>{subscription.cancellationWindowDays}d cancellation window</span>
+                  </div>
+                </div>
+              </article>
+            )
+          })}
+        </div>
+      </div>
+
       <div className="renewal-calendar-header">
         <div>
           <h2 id="renewal-calendar-title">Renewal calendar</h2>

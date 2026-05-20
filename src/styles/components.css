@@ -3564,6 +3564,1379 @@
   }
 }
 
+.mobile-copy {
+  display: none;
+}
+
+.approval-mobile-cta {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-copy {
+    display: none !important;
+  }
+
+  .mobile-copy {
+    display: inline;
+  }
+
+  .card {
+    border-radius: 1rem;
+  }
+
+  button,
+  input {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .badge,
+  .risk-badge,
+  .status-badge {
+    min-height: 1.9rem;
+    align-items: center;
+    padding: 0.32rem 0.65rem;
+    font-size: 0.92rem;
+    line-height: 1;
+    white-space: normal;
+  }
+
+  .metric-card {
+    min-height: 7.75rem;
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+
+  .metric-card__top {
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .metric-card__label {
+    max-width: 7rem;
+    color: #64748b;
+    font-size: 0.86rem;
+    letter-spacing: 0.03em;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .metric-card__icon {
+    display: grid;
+    width: 1.9rem;
+    height: 1.9rem;
+    flex: 0 0 1.9rem;
+    place-items: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.6rem;
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .metric-card__icon svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .metric-card__value {
+    margin-top: 0.75rem;
+    font-size: 1.72rem;
+    line-height: 1.05;
+  }
+
+  .metric-card__helper {
+    margin-top: 0.38rem;
+    font-size: 0.92rem;
+    line-height: 1.3;
+  }
+
+  .dashboard-reference,
+  .subscriptions-page,
+  .approval-reference-page,
+  .detail-reference {
+    gap: 1.05rem;
+  }
+
+  .dashboard-reference__header,
+  .subscriptions-header,
+  .approval-reference-header {
+    display: grid;
+    align-items: stretch;
+    gap: 0.9rem;
+  }
+
+  .dashboard-reference .page-kicker {
+    display: none;
+  }
+
+  .dashboard-reference__title,
+  .subscriptions-header__title,
+  .approval-reference-header h2 {
+    font-size: clamp(2.1rem, 9vw, 2.5rem);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+  }
+
+  .dashboard-reference__summary,
+  .subscriptions-header__subtitle,
+  .approval-reference-header p {
+    margin-top: 0.55rem;
+    color: #475569;
+    font-size: 1.16rem;
+    line-height: 1.3;
+  }
+
+  .dashboard-reference__actions,
+  .subscriptions-header__actions,
+  .approval-reference-header__actions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .dashboard-reference__secondary-action {
+    display: none !important;
+  }
+
+  .dashboard-reference__actions button,
+  .approval-mobile-cta {
+    min-height: 3.25rem;
+    width: 100%;
+    justify-content: center;
+    border-radius: 0.95rem;
+    background: #334155;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 750;
+  }
+
+  .dashboard-reference__metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .dashboard-reference__metrics .metric-card {
+    min-height: 8rem;
+    padding: 1rem;
+  }
+
+  .dashboard-reference__metrics .metric-card__label {
+    font-size: 0;
+  }
+
+  .dashboard-reference__metrics .metric-card__label::after {
+    color: #64748b;
+    font-size: 0.86rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .dashboard-reference__metrics .metric-card:nth-child(1) .metric-card__label::after {
+    content: "Spend / mo";
+  }
+
+  .dashboard-reference__metrics .metric-card:nth-child(2) .metric-card__label::after {
+    content: "Renewals";
+  }
+
+  .dashboard-reference__metrics .metric-card:nth-child(3) .metric-card__label::after {
+    content: "High risk";
+  }
+
+  .dashboard-reference__metrics .metric-card:nth-child(4) .metric-card__label::after {
+    content: "Est. savings";
+  }
+
+  .dashboard-reference__metrics .metric-card__value {
+    font-size: 1.75rem;
+  }
+
+  .dashboard-reference__body,
+  .dashboard-reference__rail {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .dashboard-card {
+    overflow: hidden;
+    border-radius: 1rem;
+  }
+
+  .dashboard-card__header {
+    min-height: 0;
+    padding: 1.05rem;
+  }
+
+  .dashboard-card__header h2 {
+    font-size: 1.25rem;
+  }
+
+  .dashboard-card__header p,
+  .dashboard-card__controls,
+  .dashboard-card__link {
+    font-size: 0.98rem;
+  }
+
+  .attention-row-reference,
+  .approval-preview-row,
+  .savings-preview-row {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 0.8rem;
+    min-height: 0;
+    padding: 1rem;
+  }
+
+  .attention-row-reference .tool-avatar--reference,
+  .approval-preview-row .tool-avatar--reference,
+  .savings-preview-row .tool-avatar--reference,
+  .subscription-tool-icon,
+  .detail-tool-icon,
+  .approval-queue-row__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .attention-row-reference__title,
+  .savings-preview-row__title {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+  }
+
+  .attention-row-reference__title strong,
+  .attention-row-reference__title span,
+  .approval-preview-row__content strong,
+  .savings-preview-row__title strong {
+    min-width: 0;
+    white-space: normal;
+  }
+
+  .attention-row-reference__content > span,
+  .attention-row-reference__meta > span,
+  .savings-preview-row__content > span {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  .attention-row-reference__meta,
+  .approval-preview-row__meta,
+  .savings-preview-row__meta {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .attention-row-reference__meta .row-button {
+    min-height: 2.25rem;
+  }
+
+  .renewal-groups-reference {
+    padding: 0.95rem;
+  }
+
+  .renewal-group-reference__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .renewal-mini-card-reference {
+    grid-template-columns: 2.4rem minmax(0, 1fr) auto;
+    min-height: 4.6rem;
+  }
+
+  .renewal-mini-card-reference__content strong,
+  .renewal-mini-card-reference__content p,
+  .renewal-mini-card-reference__content > span {
+    white-space: normal;
+  }
+
+  /* Subscriptions mobile */
+  .subscriptions-header__actions {
+    grid-template-columns: 0.72fr 1fr;
+  }
+
+  .subscriptions-header__actions button {
+    min-height: 3.15rem;
+    justify-content: center;
+    border-radius: 0.95rem;
+    font-size: 1rem;
+  }
+
+  .subscriptions-summary,
+  .subscriptions-table-heading,
+  .subscription-grid--header,
+  .reference-filterbar__chips,
+  .reference-filterbar__count {
+    display: none !important;
+  }
+
+  .subscriptions-toolbar {
+    display: block;
+  }
+
+  .subscriptions-toolbar__primary {
+    display: block;
+  }
+
+  .reference-search {
+    width: 100%;
+  }
+
+  .reference-search input {
+    width: 100%;
+    min-height: 3.15rem;
+    border-radius: 1rem;
+    padding-left: 2.75rem;
+    font-size: 1rem;
+  }
+
+  .subscriptions-table-card {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .subscription-table-shell {
+    overflow: visible;
+  }
+
+  .subscription-table-body {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .subscription-grid--row {
+    display: grid;
+    min-height: 0;
+    grid-template-columns: 3.4rem minmax(0, 1fr);
+    gap: 0.65rem 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    background: #fff;
+    padding: 1rem;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+  }
+
+  .subscription-checkbox-cell,
+  .subscription-action-cell {
+    display: none !important;
+  }
+
+  .subscription-tool-cell {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 3.2rem minmax(0, 1fr);
+    align-items: start;
+    gap: 0.85rem;
+  }
+
+  .subscription-tool-icon {
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 0.95rem;
+    background: #334155;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+
+  .subscription-tool-cell strong {
+    display: block;
+    color: #0f172a;
+    font-size: 1.08rem;
+    font-weight: 800;
+    line-height: 1.22;
+    white-space: normal;
+  }
+
+  .subscription-tool-cell small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #64748b;
+    font-size: 0.96rem;
+    line-height: 1.3;
+    white-space: normal;
+  }
+
+  .subscription-owner-cell {
+    display: none !important;
+  }
+
+  .subscription-cost-cell,
+  .subscription-renewal-cell,
+  .subscription-usage-cell,
+  .subscription-badge-cell {
+    min-width: 0;
+  }
+
+  .subscription-cost-cell {
+    grid-column: 1 / 2;
+  }
+
+  .subscription-renewal-cell {
+    grid-column: 2 / 3;
+    align-items: end;
+    text-align: right;
+  }
+
+  .subscription-cost-cell strong,
+  .subscription-renewal-cell strong {
+    font-size: 1rem;
+  }
+
+  .subscription-cost-cell small,
+  .subscription-renewal-cell small {
+    font-size: 0.9rem;
+  }
+
+  .subscription-usage-cell {
+    grid-column: 1 / -1;
+    gap: 0.45rem;
+  }
+
+  .subscription-usage-cell > span:first-child {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .subscription-usage-bar {
+    height: 0.42rem;
+    border-radius: 999px;
+    background: #e5e7eb;
+  }
+
+  .subscription-usage-bar > span {
+    background: #64748b;
+  }
+
+  .subscription-usage-bar--low > span {
+    background: #b45309;
+  }
+
+  .subscription-badge-cell {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .subscription-badge-cell:nth-of-type(7) {
+    grid-column: 1 / 2;
+  }
+
+  /* Approvals mobile */
+  .approval-reference-header__actions .button-secondary,
+  .approval-reference-header__actions > button:not(.approval-mobile-cta) {
+    display: none;
+  }
+
+  .approval-mobile-cta {
+    display: inline-flex;
+  }
+
+  .approval-reference-summary,
+  .approval-reference-filter-tools,
+  .approval-worklist__header,
+  .approval-reference-group__header strong,
+  .approval-reference-group__header p {
+    display: none !important;
+  }
+
+  .approval-reference-filters {
+    display: block;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .approval-reference-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .approval-reference-tabs button {
+    min-height: 2.75rem;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0 0.8rem;
+    font-size: 0;
+  }
+
+  .approval-reference-tabs button:nth-child(4) {
+    display: none;
+  }
+
+  .approval-reference-tabs button span {
+    display: none;
+  }
+
+  .approval-reference-tabs button:nth-child(1)::after {
+    content: "All · 8";
+  }
+
+  .approval-reference-tabs button:nth-child(2)::after {
+    content: "Owner · 3";
+  }
+
+  .approval-reference-tabs button:nth-child(3)::after {
+    content: "Finance · 2";
+  }
+
+  .approval-reference-tabs button::after {
+    font-size: 0.95rem;
+    font-weight: 750;
+  }
+
+  .approval-reference-groups {
+    gap: 0.9rem;
+  }
+
+  .approval-reference-group {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .approval-reference-group__header {
+    border-bottom: 0;
+    padding: 0;
+  }
+
+  .approval-reference-pill {
+    min-height: 1.9rem;
+    width: auto;
+    padding: 0 0.75rem;
+    font-size: 0.88rem;
+  }
+
+  .approval-worklist {
+    display: grid;
+    gap: 0.85rem;
+    border: 0;
+    background: transparent;
+  }
+
+  .approval-queue-row {
+    display: grid;
+    min-height: 0;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    gap: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    background: #fff;
+    padding: 1rem;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+  }
+
+  .approval-queue-row__tool {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 3.15rem minmax(0, 1fr);
+    gap: 0.8rem;
+  }
+
+  .approval-queue-row__icon {
+    width: 3.15rem;
+    height: 3.15rem;
+    border-radius: 0.95rem;
+    font-size: 1.08rem;
+    text-transform: uppercase;
+  }
+
+  .approval-queue-row__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.55rem;
+  }
+
+  .approval-queue-row__title h3 {
+    min-width: 0;
+    color: #0f172a;
+    font-size: 1.08rem;
+    font-weight: 800;
+    line-height: 1.2;
+    white-space: normal;
+  }
+
+  .approval-queue-row__identity p {
+    margin-top: 0.35rem;
+    color: #64748b;
+    font-size: 0.96rem;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  .approval-queue-row__cell {
+    display: grid;
+    min-width: 0;
+    gap: 0.18rem;
+  }
+
+  .approval-queue-row__cell span {
+    font-size: 0.78rem;
+  }
+
+  .approval-queue-row__cell strong {
+    overflow-wrap: anywhere;
+    font-size: 0.96rem;
+  }
+
+  .approval-queue-row__cell small {
+    font-size: 0.88rem;
+    line-height: 1.3;
+    white-space: normal;
+  }
+
+  .approval-queue-row__actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.8fr;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .approval-queue-row__actions button {
+    min-height: 2.65rem;
+    border-radius: 0.75rem;
+    padding: 0 0.5rem;
+    font-size: 0;
+  }
+
+  .approval-queue-row__actions button:nth-child(1)::after {
+    content: "Approve";
+  }
+
+  .approval-queue-row__actions button:nth-child(2)::after {
+    content: "Changes";
+  }
+
+  .approval-queue-row__actions button:nth-child(3)::after {
+    content: "Reject";
+  }
+
+  .approval-queue-row__actions button::after {
+    font-size: 0.92rem;
+    font-weight: 750;
+  }
+
+  /* Subscription detail mobile */
+  .detail-reference-hero {
+    padding: 0;
+  }
+
+  .detail-reference-hero__top {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .detail-reference-hero__identity {
+    display: grid;
+    grid-template-columns: 3.8rem minmax(0, 1fr);
+    gap: 0.9rem;
+  }
+
+  .detail-tool-icon {
+    width: 3.8rem;
+    height: 3.8rem;
+    border-radius: 1rem;
+    font-size: 1.25rem;
+  }
+
+  .detail-reference-hero__title-row {
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .detail-reference-hero__title-row h2 {
+    flex: 1 0 100%;
+    color: #0f172a;
+    font-size: 1.55rem;
+    line-height: 1.08;
+    white-space: normal;
+  }
+
+  .detail-reference-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.65rem;
+    font-size: 0.98rem;
+    line-height: 1.35;
+  }
+
+  .detail-reference-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .detail-reference-actions button {
+    min-height: 2.9rem;
+    width: 100%;
+    justify-content: center;
+    border-radius: 0.85rem;
+    font-size: 0.98rem;
+  }
+
+  .detail-tabs {
+    overflow-x: auto;
+    padding: 0 1rem 0.8rem;
+  }
+
+  .detail-reference-layout,
+  .detail-reference-main,
+  .detail-reference-sidebar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .detail-recommendation {
+    display: grid;
+    grid-template-columns: 2.3rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .detail-recommendation h2 {
+    font-size: 1.15rem;
+    line-height: 1.25;
+  }
+
+  .detail-recommendation p {
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+
+  .detail-signal-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .detail-reference-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .detail-reference-metrics .metric-card:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .detail-reference-metrics .metric-card__label {
+    font-size: 0;
+  }
+
+  .detail-reference-metrics .metric-card:nth-child(1) .metric-card__label::after {
+    content: "Monthly";
+  }
+
+  .detail-reference-metrics .metric-card:nth-child(2) .metric-card__label::after {
+    content: "Seats";
+  }
+
+  .detail-reference-metrics .metric-card:nth-child(3) .metric-card__label::after {
+    content: "Renewal";
+  }
+
+  .detail-reference-metrics .metric-card__label::after {
+    color: #64748b;
+    font-size: 0.86rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .detail-reference-card,
+  .detail-side-card,
+  .detail-savings-panel {
+    border-radius: 1rem;
+  }
+
+  .approval-workflow-step,
+  .related-tool-row {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .workflow-status,
+  .related-tool-row strong {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .detail-row,
+  .detail-row-table--compact .detail-row {
+    grid-template-columns: 1fr;
+    gap: 0.28rem;
+  }
+
+  .detail-decision-stack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .detail-decision-stack button:first-child,
+  .detail-decision-stack button:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.mobile-page {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .mobile-page {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .dashboard-reference > :not(.mobile-dashboard),
+  .subscriptions-page > :not(.mobile-subscriptions),
+  .renewal-calendar-reference > :not(.mobile-renewals),
+  .approval-reference-page > :not(.mobile-approvals):not(.confirmation-toast) {
+    display: none !important;
+  }
+
+  .mobile-page-header {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .mobile-page-header h1 {
+    margin: 0;
+    color: #0f172a;
+    font-size: clamp(2.12rem, 9vw, 2.45rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    text-shadow: none;
+  }
+
+  .mobile-page-header p {
+    margin: 0;
+    color: #475569;
+    font-size: 1.12rem;
+    line-height: 1.3;
+  }
+
+  .mobile-primary-button,
+  .mobile-secondary-button,
+  .mobile-danger-button {
+    display: inline-flex;
+    min-height: 3.15rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.95rem;
+    padding: 0 1rem;
+    font-size: 1rem;
+    font-weight: 750;
+    white-space: normal;
+  }
+
+  .mobile-primary-button {
+    border: 1px solid #334155;
+    color: #fff;
+    background: #334155;
+  }
+
+  .mobile-secondary-button {
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    background: #fff;
+  }
+
+  .mobile-danger-button {
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    background: #fff;
+  }
+
+  .mobile-action-row {
+    display: grid;
+    grid-template-columns: 0.78fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .mobile-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .mobile-kpi-card {
+    position: relative;
+    display: grid;
+    min-height: 8.25rem;
+    align-content: space-between;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    background: #fff;
+    padding: 1rem;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+  }
+
+  .mobile-kpi-card span {
+    max-width: 100%;
+    color: #64748b;
+    font-size: 0.86rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  .mobile-kpi-card strong {
+    color: #0f172a;
+    font-size: clamp(1.45rem, 7vw, 1.85rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+  }
+
+  .mobile-kpi-card small {
+    color: #64748b;
+    font-size: 0.92rem;
+    line-height: 1.25;
+  }
+
+  .mobile-card,
+  .mobile-subscription-card,
+  .mobile-approval-card,
+  .mobile-renewal-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+  }
+
+  .mobile-list-card {
+    overflow: hidden;
+  }
+
+  .mobile-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem;
+  }
+
+  .mobile-section-heading h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 1.22rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .mobile-section-heading span {
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .mobile-stack,
+  .mobile-subscription-list,
+  .mobile-renewal-list,
+  .mobile-approval-list {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .mobile-list-card .mobile-stack {
+    gap: 0;
+  }
+
+  .mobile-attention-row,
+  .mobile-renewal-row,
+  .mobile-subscription-card__top,
+  .mobile-approval-card__top,
+  .mobile-renewal-card {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    align-items: start;
+    gap: 0.85rem;
+  }
+
+  .mobile-attention-row,
+  .mobile-renewal-row {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem;
+  }
+
+  .mobile-attention-row:last-child,
+  .mobile-renewal-row:last-child {
+    border-bottom: 0;
+  }
+
+  .mobile-tool-icon {
+    display: flex;
+    width: 3.25rem;
+    height: 3.25rem;
+    flex: 0 0 3.25rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.95rem;
+    color: #fff;
+    background: #334155;
+    font-size: 1.1rem;
+    font-weight: 800;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .mobile-row-main {
+    min-width: 0;
+  }
+
+  .mobile-row-title {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem 0.55rem;
+  }
+
+  .mobile-row-title strong,
+  .mobile-row-main > strong {
+    min-width: 0;
+    color: #0f172a;
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-row-main p,
+  .mobile-row-main small,
+  .mobile-row-main em {
+    display: block;
+    margin: 0.3rem 0 0;
+    color: #64748b;
+    font-size: 0.96rem;
+    font-style: normal;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  .mobile-row-main em {
+    color: #475569;
+    font-weight: 700;
+  }
+
+  .mobile-chevron {
+    grid-column: 3;
+    align-self: center;
+    color: #94a3b8;
+    font-size: 1.7rem;
+    line-height: 1;
+  }
+
+  .mobile-date-block {
+    display: grid;
+    width: 3.25rem;
+    height: 3.6rem;
+    place-items: center;
+    align-content: center;
+    gap: 0.18rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.85rem;
+    background: #fff;
+  }
+
+  .mobile-date-block--risk {
+    border-color: #fecaca;
+    background: #fef2f2;
+  }
+
+  .mobile-date-block small {
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .mobile-date-block strong {
+    color: #0f172a;
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .mobile-date-block--risk small,
+  .mobile-date-block--risk strong {
+    color: #991b1b;
+  }
+
+  .mobile-search-field {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+  }
+
+  .mobile-search-field span {
+    position: absolute;
+    left: 1rem;
+    z-index: 1;
+    color: #64748b;
+  }
+
+  .mobile-search-field input {
+    width: 100%;
+    min-height: 3.15rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 1rem;
+    background: #fff;
+    padding: 0 1rem 0 2.75rem;
+    color: #0f172a;
+    font-size: 1rem;
+  }
+
+  .mobile-subscription-card,
+  .mobile-approval-card {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+  }
+
+  .mobile-subscription-card__meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem;
+  }
+
+  .mobile-subscription-card__meta div {
+    display: grid;
+    gap: 0.22rem;
+    min-width: 0;
+  }
+
+  .mobile-subscription-card__meta div:last-child {
+    justify-items: end;
+    text-align: right;
+  }
+
+  .mobile-subscription-card__meta strong {
+    color: #0f172a;
+    font-size: 1.02rem;
+    font-weight: 800;
+    line-height: 1.2;
+    white-space: normal;
+  }
+
+  .mobile-subscription-card__meta span {
+    color: #64748b;
+    font-size: 0.92rem;
+    line-height: 1.3;
+    white-space: normal;
+  }
+
+  .mobile-progress {
+    display: block;
+    width: 100%;
+    height: 0.46rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e5e7eb;
+  }
+
+  .mobile-progress span {
+    display: block;
+    height: 100%;
+    max-width: 100%;
+    border-radius: inherit;
+    background: #64748b;
+  }
+
+  .mobile-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    color: #64748b;
+    font-size: 0.88rem;
+  }
+
+  .mobile-filter-chip-row,
+  .mobile-filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .mobile-filter-chip-row button,
+  .mobile-filter-tabs button {
+    min-height: 2.65rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    color: #334155;
+    background: #fff;
+    padding: 0 0.85rem;
+    font-size: 0.94rem;
+    font-weight: 750;
+  }
+
+  .mobile-filter-chip-row button.is-active,
+  .mobile-filter-tabs button.is-active {
+    border-color: #334155;
+    color: #fff;
+    background: #334155;
+  }
+
+  .mobile-renewal-card {
+    padding: 1rem;
+  }
+
+  .mobile-mini-avatar {
+    display: inline-flex;
+    width: 1.45rem;
+    height: 1.45rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: #fff;
+    background: #64748b;
+    margin-right: 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    vertical-align: middle;
+  }
+
+  .mobile-approval-card__summary {
+    display: grid;
+    gap: 0.28rem;
+  }
+
+  .mobile-approval-card__summary span {
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .mobile-approval-card__summary strong {
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  .mobile-approval-card__summary p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.96rem;
+    line-height: 1.35;
+  }
+
+  .mobile-approval-actions {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 0.85fr;
+    gap: 0.5rem;
+  }
+
+  .mobile-approval-actions button {
+    min-height: 2.65rem;
+    border-radius: 0.78rem;
+    padding: 0 0.45rem;
+    font-size: 0.88rem;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: normal;
+  }
+
+  .mobile-approval-actions button:first-child {
+    border: 1px solid #334155;
+    color: #fff;
+    background: #334155;
+  }
+
+  .mobile-approval-actions .mobile-secondary-button,
+  .mobile-approval-actions .mobile-danger-button {
+    min-height: 2.65rem;
+  }
+
+  .mobile-approval-actions .mobile-secondary-button {
+    font-size: 0;
+  }
+
+  .mobile-approval-actions .mobile-secondary-button::after {
+    content: "Changes";
+    font-size: 0.88rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .metric-card__icon {
+    display: none;
+  }
+
+  .detail-reference-metrics .metric-card {
+    min-width: 0;
+  }
+
+  .detail-reference-metrics .metric-card__value {
+    overflow-wrap: anywhere;
+    font-size: clamp(1.25rem, 6vw, 1.65rem);
+  }
+}
+
+@media (max-width: 380px) {
+  .mobile-page-header h1 {
+    font-size: 2.05rem;
+  }
+
+  .mobile-kpi-card {
+    min-height: 7.7rem;
+    padding: 0.9rem;
+  }
+
+  .mobile-kpi-card strong {
+    font-size: 1.38rem;
+  }
+
+  .mobile-approval-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mobile-approval-actions button:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
 /* Savings Opportunities focused polish */
 .reference-savings {
   gap: 1rem;
@@ -4583,6 +5956,53 @@
   .settings-page .role-row__meta {
     justify-content: space-between;
     width: 100%;
+  }
+}
+
+/* Settings inner navigation sticky behavior */
+.settings-page .settings-layout {
+  align-items: flex-start;
+}
+
+.settings-page .settings-subnav {
+  position: sticky;
+  top: 40px;
+  align-self: flex-start;
+  height: fit-content;
+  max-height: calc(100vh - 88px);
+  overflow-y: auto;
+}
+
+.settings-page .settings-layout {
+  grid-template-columns: 220px minmax(760px, 980px);
+  align-items: flex-start;
+  max-width: 1220px;
+}
+
+.settings-page .settings-content {
+  width: 100%;
+  max-width: 980px;
+}
+
+.settings-page .settings-section {
+  scroll-margin-top: 96px;
+}
+
+@media (max-width: 900px) {
+  .settings-page .settings-layout {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
+
+  .settings-page .settings-content {
+    max-width: none;
+  }
+
+  .settings-page .settings-subnav {
+    position: static;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
   }
 }
 
