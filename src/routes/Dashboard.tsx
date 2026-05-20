@@ -94,15 +94,95 @@ const attentionCopy: Record<string, { reason: string; timing: string }> = {
 function Dashboard() {
   return (
     <section className="dashboard dashboard-reference" aria-labelledby="dashboard-title">
+      <div className="mobile-page mobile-dashboard" aria-label="Mobile dashboard">
+        <header className="mobile-page-header">
+          <h1>Dashboard</h1>
+          <p>6 renewals · 3 high risk · est. $42.5K savings</p>
+          <button className="mobile-primary-button" type="button">
+            Review high-risk renewals
+          </button>
+        </header>
+
+        <section className="mobile-kpi-grid" aria-label="Dashboard summary">
+          {[
+            ['Spend / mo', '$24.8K', '+3.1% vs Apr'],
+            ['Renewals', '6', '$11.4K value'],
+            ['High risk', '3', 'Needs review'],
+            ['Est. savings', '$42.5K', 'Potential annual'],
+          ].map(([label, value, helper]) => (
+            <article className="mobile-kpi-card" key={label}>
+              <span>{label}</span>
+              <strong>{value}</strong>
+              <small>{helper}</small>
+            </article>
+          ))}
+        </section>
+
+        <section className="mobile-card mobile-list-card" aria-labelledby="mobile-attention-title">
+          <div className="mobile-section-heading">
+            <h2 id="mobile-attention-title">Needs attention</h2>
+            <span>Top 3</span>
+          </div>
+          <div className="mobile-stack">
+            {attentionItems.map((subscription) => (
+              <article className="mobile-attention-row" key={subscription.id}>
+                <span className="mobile-tool-icon" aria-hidden="true">
+                  {getToolLetter(subscription.toolName)}
+                </span>
+                <div className="mobile-row-main">
+                  <div className="mobile-row-title">
+                    <strong>{subscription.toolName}</strong>
+                    <RiskBadge risk={subscription.renewalRisk} />
+                  </div>
+                  <p>{subscription.vendorName}</p>
+                  <small>{attentionCopy[subscription.id]?.reason}</small>
+                  <em>{attentionCopy[subscription.id]?.timing}</em>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="mobile-card mobile-list-card" aria-labelledby="mobile-upcoming-title">
+          <div className="mobile-section-heading">
+            <h2 id="mobile-upcoming-title">Upcoming</h2>
+            <span>Next 30d</span>
+          </div>
+          <div className="mobile-stack">
+            {[...urgentRenewals, ...thirtyDayRenewals].slice(0, 4).map((subscription) => (
+              <article className="mobile-renewal-row" key={subscription.id}>
+                <span className="mobile-date-block" aria-hidden="true">
+                  <small>{formatDate(subscription.renewalDate).split(' ')[0]}</small>
+                  <strong>{formatDate(subscription.renewalDate).split(' ')[1]}</strong>
+                </span>
+                <div className="mobile-row-main">
+                  <strong>{subscription.toolName}</strong>
+                  <p>
+                    {subscription.vendorName} · {formatCurrency(subscription.monthlyCost)}/mo
+                  </p>
+                </div>
+                <span className="mobile-chevron" aria-hidden="true">
+                  ›
+                </span>
+              </article>
+            ))}
+          </div>
+        </section>
+      </div>
+
       <header className="dashboard-reference__header">
         <div className="dashboard-reference__intro">
           <p className="page-kicker">Tuesday, May 15</p>
           <h2 className="dashboard-reference__title" id="dashboard-title">
-            Welcome back, Priya
+            <span className="desktop-copy">Welcome back, Priya</span>
+            <span className="mobile-copy">Dashboard</span>
           </h2>
           <p className="dashboard-reference__summary">
-            6 renewals in the next 30 days - 3 flagged as high risk - $42,560 in potential
-            annual savings.
+            <span className="desktop-copy">
+              6 renewals in the next 30 days - 3 flagged as high risk - $42,560 in potential
+              annual savings.
+            </span>
+            <span className="mobile-copy">6 renewals · 3 high risk · est. $42.5K savings</span>
           </p>
         </div>
 

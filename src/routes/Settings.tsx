@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ConfirmationToast from '../components/ConfirmationToast'
 
 const teamRoles = [
@@ -24,15 +24,58 @@ const teamRoles = [
   },
 ]
 
+const settingsSections = [
+  { id: 'company-profile', label: 'Company profile' },
+  { id: 'renewal-alerts', label: 'Renewal alerts' },
+  { id: 'approval-rules', label: 'Approval rules' },
+  { id: 'team-roles', label: 'Team roles' },
+  { id: 'notifications', label: 'Notifications' },
+  { id: 'integrations', label: 'Integrations' },
+  { id: 'billing', label: 'Billing' },
+]
+
 function Settings() {
   const [confirmationMessage, setConfirmationMessage] = useState('')
   const [alertWindow, setAlertWindow] = useState('60')
   const [costThreshold, setCostThreshold] = useState('10000')
   const [utilisationThreshold, setUtilisationThreshold] = useState('60')
+  const [activeSection, setActiveSection] = useState(settingsSections[0].id)
 
   const showConfirmation = (message: string) => {
     setConfirmationMessage(message)
   }
+
+  const handleSectionClick = (sectionId: string) => {
+    setActiveSection(sectionId)
+    document.getElementById(sectionId)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
+
+  useEffect(() => {
+    const updateActiveSection = () => {
+      const sectionOffset = 112
+      const currentSection = [...settingsSections]
+        .reverse()
+        .find((section) => {
+          const element = document.getElementById(section.id)
+
+          return element ? element.getBoundingClientRect().top <= sectionOffset : false
+        })
+
+      setActiveSection(currentSection?.id ?? settingsSections[0].id)
+    }
+
+    updateActiveSection()
+    window.addEventListener('scroll', updateActiveSection, { passive: true })
+    window.addEventListener('resize', updateActiveSection)
+
+    return () => {
+      window.removeEventListener('scroll', updateActiveSection)
+      window.removeEventListener('resize', updateActiveSection)
+    }
+  }, [])
 
   return (
     <section className="settings-page" aria-labelledby="settings-title">
@@ -71,30 +114,31 @@ function Settings() {
       ) : null}
 
       <div className="settings-layout">
-        <aside className="settings-tabs" aria-label="Settings sections">
-          {[
-            'Company profile',
-            'Renewal alerts',
-            'Approval rules',
-            'Team roles',
-            'Notifications',
-            'Integrations',
-            'Billing',
-          ].map((item, index) => (
+        <aside className="settings-tabs settings-subnav" aria-label="Settings sections">
+          {settingsSections.map((item) => (
             <button
-              aria-current={index === 0 ? 'page' : undefined}
-              className={index === 0 ? 'settings-tabs__item settings-tabs__item--active' : 'settings-tabs__item'}
-              key={item}
+              aria-current={activeSection === item.id ? 'page' : undefined}
+              className={
+                activeSection === item.id
+                  ? 'settings-tabs__item settings-tabs__item--active'
+                  : 'settings-tabs__item'
+              }
+              key={item.id}
+              onClick={() => handleSectionClick(item.id)}
               type="button"
             >
-              {item}
+              {item.label}
             </button>
           ))}
         </aside>
 
         <div className="settings-content">
       <div className="settings-grid">
-        <section className="card settings-section" aria-labelledby="company-profile-title">
+        <section
+          className="card settings-section"
+          id="company-profile"
+          aria-labelledby="company-profile-title"
+        >
           <div className="section-heading section-heading--padded">
             <div>
               <h2 id="company-profile-title">Company profile</h2>
@@ -134,7 +178,11 @@ function Settings() {
           </div>
         </section>
 
-        <section className="card settings-section" aria-labelledby="alerts-title">
+        <section
+          className="card settings-section"
+          id="renewal-alerts"
+          aria-labelledby="alerts-title"
+        >
           <div className="section-heading section-heading--padded">
             <div>
               <h2 id="alerts-title">Renewal alert preferences</h2>
@@ -166,7 +214,11 @@ function Settings() {
         </section>
       </div>
 
-      <section className="card settings-section" aria-labelledby="approval-rules-title">
+      <section
+        className="card settings-section"
+        id="approval-rules"
+        aria-labelledby="approval-rules-title"
+      >
         <div className="section-heading section-heading--padded">
           <div>
             <h2 id="approval-rules-title">Approval rules</h2>
@@ -207,7 +259,7 @@ function Settings() {
         </div>
       </section>
 
-      <section className="card settings-section" aria-labelledby="roles-title">
+      <section className="card settings-section" id="team-roles" aria-labelledby="roles-title">
         <div className="section-heading section-heading--padded">
           <div>
             <h2 id="roles-title">Team roles</h2>
@@ -232,7 +284,11 @@ function Settings() {
         </div>
       </section>
 
-      <section className="card settings-section" aria-labelledby="notifications-title">
+      <section
+        className="card settings-section"
+        id="notifications"
+        aria-labelledby="notifications-title"
+      >
         <div className="section-heading section-heading--padded">
           <div>
             <h2 id="notifications-title">Notification preferences</h2>
@@ -255,6 +311,43 @@ function Settings() {
           <label className="settings-check settings-check--card">
             <input type="checkbox" defaultChecked />
             <span>Renewal calendar reminder</span>
+          </label>
+        </div>
+      </section>
+
+      <section className="card settings-section" id="integrations" aria-labelledby="integrations-title">
+        <div className="section-heading section-heading--padded">
+          <div>
+            <h2 id="integrations-title">Integrations</h2>
+            <p>Mock future connection points for subscription and communication systems.</p>
+          </div>
+        </div>
+        <div className="settings-rules-grid">
+          <label className="settings-check settings-check--card">
+            <input type="checkbox" />
+            <span>Prepare accounting export placeholder</span>
+          </label>
+          <label className="settings-check settings-check--card">
+            <input type="checkbox" />
+            <span>Enable mock calendar handoff notes</span>
+          </label>
+        </div>
+      </section>
+
+      <section className="card settings-section" id="billing" aria-labelledby="billing-title">
+        <div className="section-heading section-heading--padded">
+          <div>
+            <h2 id="billing-title">Billing</h2>
+            <p>Portfolio placeholder for future workspace billing and plan controls.</p>
+          </div>
+        </div>
+        <div className="settings-form-grid">
+          <label className="settings-field">
+            <span>Plan visibility</span>
+            <select defaultValue="finance">
+              <option value="finance">Finance admins only</option>
+              <option value="admins">All admins</option>
+            </select>
           </label>
         </div>
       </section>

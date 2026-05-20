@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import EmptyState from '../components/EmptyState'
 import FilterDropdown from '../components/FilterDropdown'
 import MetricCard from '../components/MetricCard'
+import RiskBadge from '../components/RiskBadge'
+import StatusBadge from '../components/StatusBadge'
 import SubscriptionTable from '../components/SubscriptionTable'
 import { subscriptions } from '../data/subscriptions'
 import type {
@@ -58,6 +60,29 @@ const labelFromValue = (value: string) =>
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ')
 
+const today = new Date('2026-05-15T00:00:00')
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat('en-US', {
+    currency: 'USD',
+    maximumFractionDigits: 0,
+    style: 'currency',
+  }).format(value)
+
+const formatDate = (value: string) =>
+  new Intl.DateTimeFormat('en-US', {
+    day: '2-digit',
+    month: 'short',
+  }).format(new Date(`${value}T00:00:00`))
+
+const daysUntilRenewal = (dateValue: string) =>
+  Math.ceil(
+    (new Date(`${dateValue}T00:00:00`).getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+  )
+
+const getUtilisation = (subscription: SubscriptionType) =>
+  Math.round((subscription.activeUsers / subscription.seatsPurchased) * 100)
+
 type SubscriptionsProps = {
   onOpenDetail?: (subscription: SubscriptionType) => void
 }
@@ -108,23 +133,100 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
 
   return (
     <section className="subscriptions-page" aria-labelledby="subscriptions-title">
+      <div className="mobile-page mobile-subscriptions" aria-label="Mobile subscriptions">
+        <header className="mobile-page-header">
+          <h1>Subscriptions</h1>
+          <p>24 active · 3 high-risk</p>
+          <div className="mobile-action-row">
+            <button className="mobile-primary-button" type="button">
+              + Add
+            </button>
+            <button className="mobile-secondary-button" type="button">
+              Filters · 2
+            </button>
+          </div>
+          <label className="mobile-search-field">
+            <span aria-hidden="true">⌕</span>
+            <input
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search subscriptions"
+              type="search"
+              value={searchQuery}
+            />
+          </label>
+        </header>
+
+        <div className="mobile-subscription-list">
+          {filteredSubscriptions.slice(0, 12).map((subscription) => {
+            const utilisation = getUtilisation(subscription)
+            const daysRemaining = daysUntilRenewal(subscription.renewalDate)
+
+            return (
+              <article className="mobile-subscription-card" key={subscription.id}>
+                <div className="mobile-subscription-card__top">
+                  <span className="mobile-tool-icon" aria-hidden="true">
+                    {subscription.toolName.charAt(0).toUpperCase()}
+                  </span>
+                  <div className="mobile-row-main">
+                    <div className="mobile-row-title">
+                      <strong>{subscription.toolName}</strong>
+                      <RiskBadge risk={subscription.renewalRisk} />
+                    </div>
+                    <p>
+                      {subscription.vendorName} · {subscription.category}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mobile-subscription-card__meta">
+                  <div>
+                    <strong>{formatCurrency(subscription.monthlyCost)}/mo</strong>
+                    <span>
+                      Renews {formatDate(subscription.renewalDate)} · in {daysRemaining}d
+                    </span>
+                  </div>
+                  <div>
+                    <span>Seats</span>
+                    <strong>
+                      {subscription.activeUsers}/{subscription.seatsPurchased}
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="mobile-progress" aria-hidden="true">
+                  <span style={{ width: `${Math.min(utilisation, 100)}%` }} />
+                </div>
+
+                <footer className="mobile-card-badges">
+                  <StatusBadge status={subscription.approvalStatus} />
+                  <StatusBadge status={subscription.status} />
+                </footer>
+              </article>
+            )
+          })}
+        </div>
+      </div>
+
       <div className="subscriptions-header">
         <div>
           <h2 className="subscriptions-header__title" id="subscriptions-title">
             Subscriptions
           </h2>
           <p className="subscriptions-header__subtitle">
-            All SaaS tools across the workspace · 24 active subscriptions
+            <span className="desktop-copy">All SaaS tools across the workspace · 24 active subscriptions</span>
+            <span className="mobile-copy">24 active · 3 high-risk</span>
           </p>
         </div>
         <div className="subscriptions-header__actions">
           <button className="button-secondary" type="button">
-            <span aria-hidden="true">↓</span>
-            Export list
+            <span className="desktop-copy" aria-hidden="true">↓</span>
+            <span className="desktop-copy">Export list</span>
+            <span className="mobile-copy">Filters · 2</span>
           </button>
           <button type="button">
             <span aria-hidden="true">+</span>
-            Add subscription
+            <span className="desktop-copy">Add subscription</span>
+            <span className="mobile-copy">Add</span>
           </button>
         </div>
       </div>

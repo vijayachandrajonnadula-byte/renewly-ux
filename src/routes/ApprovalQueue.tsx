@@ -211,16 +211,107 @@ function ApprovalQueue() {
 
   return (
     <section className="approval-reference-page" aria-labelledby="approval-queue-title">
+      <div className="mobile-page mobile-approvals" aria-label="Mobile approvals">
+        <header className="mobile-page-header">
+          <h1>Approvals</h1>
+          <p>3 owner · 2 finance · 3 high-risk</p>
+          <button className="mobile-primary-button" type="button">
+            Open my queue
+          </button>
+        </header>
+
+        <section className="mobile-filter-tabs" aria-label="Approval filters">
+          <button
+            className={activeFilter === 'all' ? 'is-active' : ''}
+            onClick={() => setActiveFilter('all')}
+            type="button"
+          >
+            All · 8
+          </button>
+          <button
+            className={activeFilter === 'needs_owner_review' ? 'is-active' : ''}
+            onClick={() => setActiveFilter('needs_owner_review')}
+            type="button"
+          >
+            Owner · 3
+          </button>
+          <button
+            className={activeFilter === 'waiting_finance' ? 'is-active' : ''}
+            onClick={() => setActiveFilter('waiting_finance')}
+            type="button"
+          >
+            Finance · 2
+          </button>
+        </section>
+
+        <div className="mobile-approval-list">
+          {filteredApprovals.slice(0, 8).map((approval) => (
+            <article className="mobile-approval-card" key={approval.id}>
+              <div className="mobile-approval-card__top">
+                <span className="mobile-tool-icon" aria-hidden="true">
+                  {approval.toolName.charAt(0).toUpperCase()}
+                </span>
+                <div className="mobile-row-main">
+                  <div className="mobile-row-title">
+                    <strong>{approval.toolName}</strong>
+                    <RiskBadge risk={approval.risk} />
+                  </div>
+                  <p>
+                    {approval.owner} · {approval.department}
+                  </p>
+                </div>
+              </div>
+              <div className="mobile-approval-card__summary">
+                <span>{approval.requestedDecision}</span>
+                <strong>
+                  {formatCurrency(approval.cost)}/mo · {formatDate(approval.renewalDate)}
+                </strong>
+                <p>{cleanCopy(approval.reasonForReview)}</p>
+              </div>
+              <div className="mobile-approval-actions">
+                <button
+                  type="button"
+                  onClick={() => setConfirmationMessage('Approval marked as approved for this mock workflow.')}
+                >
+                  Approve
+                </button>
+                <button
+                  className="mobile-secondary-button"
+                  type="button"
+                  onClick={() => setConfirmationMessage('Changes requested from the tool owner.')}
+                >
+                  Request changes
+                </button>
+                <button
+                  className="mobile-danger-button"
+                  type="button"
+                  onClick={() => setConfirmationMessage('Request rejected for this mock workflow.')}
+                >
+                  Reject
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
       <header className="approval-reference-header">
         <div>
-          <h2 id="approval-queue-title">Approval queue</h2>
-          <p>Pending renewal decisions awaiting owner or finance review.</p>
+          <h2 id="approval-queue-title">
+            <span className="desktop-copy">Approval queue</span>
+            <span className="mobile-copy">Approvals</span>
+          </h2>
+          <p>
+            <span className="desktop-copy">Pending renewal decisions awaiting owner or finance review.</span>
+            <span className="mobile-copy">3 owner · 2 finance · 3 high-risk</span>
+          </p>
         </div>
         <div className="approval-reference-header__actions">
           <button className="button-secondary" type="button">
             Export queue
           </button>
           <button type="button">Assign owner</button>
+          <button className="approval-mobile-cta" type="button">Open my queue</button>
         </div>
       </header>
 

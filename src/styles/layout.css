@@ -400,3 +400,177 @@
     padding: var(--space-4);
   }
 }
+
+.mobile-topbar,
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .app-shell {
+    display: block;
+    min-height: 100vh;
+    background: #f8fafc;
+  }
+
+  .sidebar,
+  .topbar {
+    display: none;
+  }
+
+  .app-shell__main {
+    min-height: 100vh;
+  }
+
+  .mobile-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    min-height: 4.75rem;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: rgb(255 255 255 / 0.96);
+    padding: 0 1.25rem;
+    backdrop-filter: blur(14px);
+  }
+
+  .mobile-brand {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.7rem;
+    color: #0f172a;
+    font-size: 1.15rem;
+    font-weight: 750;
+  }
+
+  .mobile-brand__mark {
+    display: grid;
+    width: 2.15rem;
+    height: 2.15rem;
+    place-items: center;
+    border-radius: 0.75rem;
+    color: #fff;
+    background: #334155;
+    font-size: 0.95rem;
+    font-weight: 800;
+  }
+
+  .mobile-topbar__actions {
+    display: inline-flex;
+    margin-left: auto;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .mobile-icon-button {
+    display: grid;
+    width: 2.45rem;
+    height: 2.45rem;
+    place-items: center;
+    border: 0;
+    border-radius: 0.8rem;
+    color: #334155;
+    background: transparent;
+    padding: 0;
+  }
+
+  .mobile-icon-button:hover,
+  .mobile-icon-button:focus-visible {
+    outline: 0;
+    background: #f1f5f9;
+    box-shadow: 0 0 0 3px rgb(148 163 184 / 0.18);
+  }
+
+  .mobile-icon-button svg,
+  .mobile-bottom-nav svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mobile-icon-button--notify {
+    position: relative;
+  }
+
+  .mobile-icon-button--notify::after {
+    position: absolute;
+    top: 0.55rem;
+    right: 0.58rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #dc2626;
+    content: "";
+  }
+
+  .mobile-avatar {
+    display: grid;
+    width: 2.35rem;
+    height: 2.35rem;
+    place-items: center;
+    border-radius: 999px;
+    color: #fff;
+    background: #475569;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .app-shell__content {
+    width: 100%;
+    max-width: none !important;
+    padding: 1.25rem 1.25rem 7.5rem !important;
+    overflow-x: hidden;
+  }
+
+  .mobile-bottom-nav {
+    position: fixed;
+    right: 0.85rem;
+    bottom: 0.75rem;
+    left: 0.85rem;
+    z-index: 60;
+    display: grid;
+    min-height: 4.75rem;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.5rem;
+    background: rgb(255 255 255 / 0.98);
+    padding: 0.35rem;
+    box-shadow: 0 18px 40px rgb(15 23 42 / 0.16);
+    backdrop-filter: blur(18px);
+  }
+
+  .mobile-bottom-nav button {
+    display: grid;
+    min-width: 0;
+    min-height: 3.8rem;
+    place-items: center;
+    gap: 0.25rem;
+    border: 0;
+    border-radius: 1.05rem;
+    color: #64748b;
+    background: transparent;
+    padding: 0;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .mobile-bottom-nav button.is-active {
+    color: #0f172a;
+    background: #f1f5f9;
+  }
+
+  .mobile-bottom-nav button:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 3px rgb(148 163 184 / 0.18);
+  }
+}
