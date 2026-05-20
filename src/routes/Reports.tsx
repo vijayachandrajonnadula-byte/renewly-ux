@@ -56,6 +56,35 @@ function Reports() {
   const highestSavings = [...savingsOpportunities]
     .sort((first, second) => second.estimatedAnnualSavings - first.estimatedAnnualSavings)
     .slice(0, 3)
+  const departmentSpend = Object.entries(
+    subscriptions.reduce<Record<string, number>>((departments, subscription) => {
+      departments[subscription.department] =
+        (departments[subscription.department] ?? 0) + subscription.monthlyCost
+
+      return departments
+    }, {}),
+  )
+    .sort(([, first], [, second]) => second - first)
+    .slice(0, 4)
+  const maxDepartmentSpend = Math.max(...departmentSpend.map(([, spend]) => spend), 1)
+  const riskSummary = [
+    {
+      count: subscriptions.filter((subscription) => subscription.renewalRisk === 'high').length,
+      label: 'High risk',
+      tone: 'high',
+    },
+    {
+      count: subscriptions.filter((subscription) => subscription.renewalRisk === 'medium').length,
+      label: 'Medium risk',
+      tone: 'medium',
+    },
+    {
+      count: subscriptions.filter((subscription) => subscription.renewalRisk === 'low').length,
+      label: 'Low risk',
+      tone: 'low',
+    },
+  ]
+  const maxRiskCount = Math.max(...riskSummary.map((item) => item.count), 1)
 
   return (
     <section className="reports-page" aria-labelledby="reports-title">
@@ -129,43 +158,90 @@ function Reports() {
             <p>A portfolio-safe report using mock data and estimated potential savings.</p>
           </div>
         </div>
-        <div className="report-section-grid">
-          <article>
+        <div className="report-section-grid report-section-grid--finance">
+          <article className="report-insight-card report-insight-card--wide">
+            <span className="report-insight-label">Summary</span>
             <h3>Executive summary</h3>
             <p>
               Renewly highlights several high-risk renewals, pending approval decisions, and
               estimated potential savings opportunities that should be reviewed before renewal dates.
             </p>
           </article>
-          <article>
+          <article className="report-insight-card">
+            <span className="report-insight-label">Insight</span>
             <h3>Spend overview</h3>
             <p>
               Current mock monthly spend is {formatCurrency(totalMonthlySpend)}, with{' '}
               {formatCurrency(upcomingRenewalSpend)} in annual renewal value due within 90 days.
             </p>
           </article>
-          <article>
+          <article className="report-visual-card report-visual-card--wide">
+            <div>
+              <span className="report-insight-label">Spend overview</span>
+              <h3>Monthly spend by department</h3>
+            </div>
+            <div className="report-bar-list">
+              {departmentSpend.map(([department, spend]) => (
+                <div className="report-bar-row" key={department}>
+                  <div className="report-bar-row__meta">
+                    <span>{department}</span>
+                    <strong>{formatCurrency(spend)}</strong>
+                  </div>
+                  <div className="report-bar-track" aria-hidden="true">
+                    <span style={{ width: `${Math.round((spend / maxDepartmentSpend) * 100)}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+          <article className="report-insight-card">
+            <span className="report-insight-label report-insight-label--risk">Risk</span>
             <h3>Renewal risk overview</h3>
             <p>
               High-risk renewals should be reviewed first because they combine deadline pressure,
               low usage, unclear ownership, or pending approval context.
             </p>
           </article>
-          <article>
+          <article className="report-visual-card">
+            <div>
+              <span className="report-insight-label report-insight-label--risk">Risk</span>
+              <h3>Renewal risk distribution</h3>
+            </div>
+            <div className="report-risk-bars">
+              {riskSummary.map((risk) => (
+                <div className="report-risk-row" key={risk.label}>
+                  <div className="report-risk-row__label">
+                    <span>{risk.label}</span>
+                    <strong>{risk.count}</strong>
+                  </div>
+                  <div className="report-risk-track" aria-hidden="true">
+                    <span
+                      className={`report-risk-fill report-risk-fill--${risk.tone}`}
+                      style={{ width: `${Math.round((risk.count / maxRiskCount) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+          <article className="report-insight-card">
+            <span className="report-insight-label">Approval</span>
             <h3>Approval status overview</h3>
             <p>
               {pendingDecisions.length} decisions are still pending or need owner information in
               the mock workflow.
             </p>
           </article>
-          <article>
+          <article className="report-insight-card">
+            <span className="report-insight-label report-insight-label--savings">Savings</span>
             <h3>Savings opportunities summary</h3>
             <p>
               Estimated annual potential savings total {formatCurrency(estimatedAnnualSavings)}.
               These are mock estimates and should be treated as review prompts, not guaranteed outcomes.
             </p>
           </article>
-          <article>
+          <article className="report-insight-card report-insight-card--wide">
+            <span className="report-insight-label">Action</span>
             <h3>Recommended next actions</h3>
             <p>
               Review high-risk renewals, resolve pending owner questions, and validate the highest

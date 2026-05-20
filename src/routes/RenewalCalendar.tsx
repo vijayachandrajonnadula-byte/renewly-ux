@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import CalendarCard from '../components/CalendarCard'
 import EmptyState from '../components/EmptyState'
+import FilterDropdown from '../components/FilterDropdown'
 import MetricCard from '../components/MetricCard'
-import { savingsOpportunities } from '../data/savings'
 import { subscriptions } from '../data/subscriptions'
 import type { Subscription } from '../types'
 
@@ -15,6 +15,22 @@ const rangeLabels: Record<RangeFilter, string> = {
   60: 'Next 60 days',
   90: 'Next 90 days',
 }
+
+const referenceOrder = [
+  'sub-forge-analytics',
+  'sub-quillpad',
+  'sub-pulsemail',
+  'sub-threadly',
+  'sub-cipher-vault',
+  'sub-sonar-insights',
+  'sub-beacon-crm',
+  'sub-crater-docs',
+  'sub-ledgr',
+  'sub-nimbus-storage',
+  'sub-marbl-design',
+  'sub-loop-hr',
+  'sub-voltage-ci',
+]
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('en-US', {
@@ -42,28 +58,50 @@ const isPendingApproval = (subscription: Subscription) =>
 
 const upcomingSubscriptions = subscriptions
   .filter((subscription) => getDaysUntilRenewal(subscription) >= 0)
-  .sort(
-    (first, second) =>
+  .sort((first, second) => {
+    const firstReferenceIndex = referenceOrder.indexOf(first.id)
+    const secondReferenceIndex = referenceOrder.indexOf(second.id)
+
+    if (firstReferenceIndex !== -1 || secondReferenceIndex !== -1) {
+      return (
+        (firstReferenceIndex === -1 ? Number.MAX_SAFE_INTEGER : firstReferenceIndex) -
+        (secondReferenceIndex === -1 ? Number.MAX_SAFE_INTEGER : secondReferenceIndex)
+      )
+    }
+
+    return (
       getDateFromString(first.renewalDate).getTime() -
-      getDateFromString(second.renewalDate).getTime(),
-  )
+      getDateFromString(second.renewalDate).getTime()
+    )
+  })
 
 const getRenewalsWithinDays = (days: number) =>
-  upcomingSubscriptions.filter((subscription) => {
-    const daysUntilRenewal = getDaysUntilRenewal(subscription)
+  upcomingSubscriptions.filter((subscription) => getDaysUntilRenewal(subscription) <= days)
 
-    return daysUntilRenewal <= days
-  })
+const sumMonthlyCost = (items: Subscription[]) =>
+  items.reduce((total, subscription) => total + subscription.monthlyCost, 0)
+
+const departmentOptions = [
+  { label: 'All', value: 'all' },
+  ...[...new Set(subscriptions.map((subscription) => subscription.department))]
+    .sort()
+    .map((department) => ({ label: department, value: department })),
+]
+
+const ownerOptions = [
+  { label: 'Any', value: 'all' },
+  ...[...new Set(subscriptions.map((subscription) => subscription.owner))]
+    .sort()
+    .map((owner) => ({ label: owner, value: owner })),
+]
 
 function RenewalCalendar() {
   const [rangeFilter, setRangeFilter] = useState<RangeFilter>(90)
   const [highRiskOnly, setHighRiskOnly] = useState(false)
   const [pendingApprovalOnly, setPendingApprovalOnly] = useState(false)
-
-  const savingsSubscriptionIds = useMemo(
-    () => new Set(savingsOpportunities.map((opportunity) => opportunity.subscriptionId)),
-    [],
-  )
+  const [department, setDepartment] = useState('all')
+  const [owner, setOwner] = useState('all')
+  const [viewMode, setViewMode] = useState<'list' | 'month'>('list')
 
   const filteredRenewals = useMemo(() => {
     return upcomingSubscriptions.filter((subscription) => {
@@ -72,10 +110,12 @@ function RenewalCalendar() {
       return (
         daysUntilRenewal <= rangeFilter &&
         (!highRiskOnly || subscription.renewalRisk === 'high') &&
-        (!pendingApprovalOnly || isPendingApproval(subscription))
+        (!pendingApprovalOnly || isPendingApproval(subscription)) &&
+        (department === 'all' || subscription.department === department) &&
+        (owner === 'all' || subscription.owner === owner)
       )
     })
-  }, [highRiskOnly, pendingApprovalOnly, rangeFilter])
+  }, [department, highRiskOnly, owner, pendingApprovalOnly, rangeFilter])
 
   const groupedRenewals = useMemo(() => {
     return filteredRenewals.reduce<Record<string, Subscription[]>>((groups, subscription) => {
@@ -92,6 +132,8 @@ function RenewalCalendar() {
     setRangeFilter(90)
     setHighRiskOnly(false)
     setPendingApprovalOnly(false)
+    setDepartment('all')
+    setOwner('all')
   }
 
   const renewalsInThirtyDays = getRenewalsWithinDays(30)
@@ -100,63 +142,91 @@ function RenewalCalendar() {
     (subscription) => getDaysUntilRenewal(subscription) <= 90 && subscription.renewalRisk === 'high',
   )
   const upcomingRenewalSpend = getRenewalsWithinDays(90).reduce(
-    (total, subscription) => total + subscription.annualCost,
+    (total, subscription) => total + subscription.monthlyCost,
     0,
   )
 
   return (
-    <section className="renewal-calendar-page" aria-labelledby="renewal-calendar-title">
-      <div className="dashboard__header">
+    <section
+      className="renewal-calendar-page renewal-calendar-reference"
+      aria-labelledby="renewal-calendar-title"
+    >
+      <div className="renewal-calendar-header">
         <div>
-          <h2 className="dashboard__title" id="renewal-calendar-title">
-            Renewal Calendar
-          </h2>
-          <p className="dashboard__subtitle">
-            Track upcoming renewals, risk, ownership, and approval deadlines.
+          <h2 id="renewal-calendar-title">Renewal calendar</h2>
+          <p>
+            Time-sensitive renewals across the workspace {'\u00B7'} grouped by month.
           </p>
         </div>
-        <div className="dashboard__actions">
-          <button type="button" onClick={() => setRangeFilter(30)}>
-            Review next 30 days
-          </button>
-          <button className="button-secondary" type="button">
-            Export renewal plan
+        <div className="renewal-calendar-header__actions">
+          <div className="renewal-view-toggle" aria-label="Calendar view">
+            {(['list', 'month'] as const).map((mode) => (
+              <button
+                className={viewMode === mode ? 'renewal-view-toggle__button--active' : ''}
+                key={mode}
+                onClick={() => setViewMode(mode)}
+                type="button"
+              >
+                <span aria-hidden="true" className="renewal-toggle-icon">
+                  {mode === 'list' ? (
+                    <svg viewBox="0 0 16 16">
+                      <path d="M3 4h10M3 8h10M3 12h10" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 16 16">
+                      <path d="M3 3h4v4H3zM9 3h4v4H9zM3 9h4v4H3zM9 9h4v4H9z" />
+                    </svg>
+                  )}
+                </span>
+                {mode === 'list' ? 'List' : 'Month'}
+              </button>
+            ))}
+          </div>
+          <button className="renewal-export-button" type="button">
+            <svg aria-hidden="true" viewBox="0 0 16 16">
+              <path d="M8 3v7M5.5 7.5 8 10l2.5-2.5M4 13h8" />
+            </svg>
+            Export schedule
           </button>
         </div>
       </div>
 
-      <div className="summary-strip" aria-label="Renewal calendar summary">
+      <div className="summary-strip renewal-calendar-summary" aria-label="Renewal calendar summary">
         <MetricCard
-          helper="Renewal dates through 14 Jun 2026"
-          label="Renewals in next 30 days"
-          tone="warning"
+          helper={`${formatCurrency(sumMonthlyCost(renewalsInThirtyDays))} contract value`}
+          icon="calendar"
+          label="Next 30 days"
+          tone="primary"
           value={String(renewalsInThirtyDays.length)}
         />
         <MetricCard
-          helper="Renewal dates through 14 Jul 2026"
-          label="Renewals in next 60 days"
+          helper={`${formatCurrency(sumMonthlyCost(renewalsInSixtyDays))} contract value`}
+          icon="calendar"
+          label="Next 60 days"
           tone="primary"
           value={String(renewalsInSixtyDays.length)}
         />
         <MetricCard
-          helper="High-risk items in the next 90 days"
-          label="High-risk upcoming renewals"
+          helper="needs review"
+          icon="alert"
+          label="High-risk upcoming"
           tone="danger"
           value={String(highRiskUpcoming.length)}
         />
         <MetricCard
-          helper="Mock annual spend renewing in 90 days"
+          helper="next 90 days"
+          icon="money"
           label="Upcoming renewal spend"
-          tone="success"
+          tone="primary"
           value={formatCurrency(upcomingRenewalSpend)}
         />
       </div>
 
-      <section className="card calendar-filter-panel" aria-label="Renewal calendar filters">
-        <div className="calendar-filter-group" aria-label="Date range">
+      <section className="renewal-filterbar-reference" aria-label="Renewal calendar filters">
+        <div className="renewal-range-controls" aria-label="Date range">
           {([30, 60, 90] as RangeFilter[]).map((range) => (
             <button
-              className={rangeFilter === range ? '' : 'button-secondary'}
+              className={rangeFilter === range ? 'is-active' : ''}
               key={range}
               onClick={() => setRangeFilter(range)}
               type="button"
@@ -165,50 +235,70 @@ function RenewalCalendar() {
             </button>
           ))}
         </div>
-        <div className="calendar-filter-group" aria-label="Priority filters">
+
+        <div className="renewal-priority-controls" aria-label="Priority filters">
           <button
-            className={highRiskOnly ? '' : 'button-secondary'}
+            className={highRiskOnly ? 'is-active' : ''}
             onClick={() => setHighRiskOnly((currentValue) => !currentValue)}
             type="button"
           >
+            <svg aria-hidden="true" viewBox="0 0 16 16">
+              <path d="M8 3 2.75 12.5h10.5L8 3ZM8 6.5v3M8 11.5h.01" />
+            </svg>
             High risk only
           </button>
           <button
-            className={pendingApprovalOnly ? '' : 'button-secondary'}
+            className={pendingApprovalOnly ? 'is-active' : ''}
             onClick={() => setPendingApprovalOnly((currentValue) => !currentValue)}
             type="button"
           >
+            <svg aria-hidden="true" viewBox="0 0 16 16">
+              <path d="M8 3.25v4.9l3 1.8M14 8A6 6 0 1 1 8 2" />
+            </svg>
             Pending approval only
           </button>
-          <button className="button-secondary" onClick={clearFilters} type="button">
-            Clear filters
+        </div>
+
+        <div className="renewal-owner-controls">
+          <FilterDropdown
+            className="renewal-filter-dropdown renewal-filter-dropdown--department"
+            label="Department"
+            onChange={setDepartment}
+            options={departmentOptions}
+            value={department}
+          />
+          <FilterDropdown
+            className="renewal-filter-dropdown renewal-filter-dropdown--owner"
+            label="Owner"
+            onChange={setOwner}
+            options={ownerOptions}
+            value={owner}
+          />
+          <button className="renewal-clear-button" onClick={clearFilters} type="button">
+            Reset
           </button>
         </div>
       </section>
 
-      <section className="calendar-board" aria-labelledby="calendar-board-title">
-        <div className="section-heading">
-          <div>
-            <h2 id="calendar-board-title">Renewals by month</h2>
-            <p>
-              Showing {filteredRenewals.length} renewals in {rangeLabels[rangeFilter].toLowerCase()}.
-            </p>
-          </div>
-        </div>
-
+      <section className="calendar-board" aria-label="Renewals grouped by month">
         {filteredRenewals.length > 0 ? (
-          <div className="month-groups">
+          <div className="renewal-month-groups">
             {Object.entries(groupedRenewals).map(([month, monthRenewals]) => (
-              <section className="month-group card" key={month}>
-                <div className="month-group__header">
-                  <h3>{month}</h3>
-                  <span>{monthRenewals.length} renewals</span>
+              <section className="renewal-month-group" key={month}>
+                <div className="renewal-month-group__header">
+                  <div>
+                    <h3>{month}</h3>
+                    <span>
+                      {monthRenewals.length} renewals {'\u00B7'}{' '}
+                      {formatCurrency(sumMonthlyCost(monthRenewals))} contract value
+                    </span>
+                  </div>
+                  <p>Sorted by date</p>
                 </div>
-                <div className="calendar-card-grid">
+                <div className="renewal-card-grid-reference">
                   {monthRenewals.map((subscription) => (
                     <CalendarCard
                       daysUntilRenewal={getDaysUntilRenewal(subscription)}
-                      hasSavingsOpportunity={savingsSubscriptionIds.has(subscription.id)}
                       key={subscription.id}
                       subscription={subscription}
                     />

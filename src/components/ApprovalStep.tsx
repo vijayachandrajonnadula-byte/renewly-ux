@@ -3,7 +3,6 @@ import type { ApprovalRequest } from '../types'
 
 type ApprovalStepProps = {
   approval: ApprovalRequest
-  nextAction: string
   onAction: (message: string) => void
 }
 
@@ -16,76 +15,84 @@ const formatCurrency = (value: number) =>
 
 const formatDate = (value: string) =>
   new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
+    day: '2-digit',
     month: 'short',
   }).format(new Date(`${value}T00:00:00`))
 
 const canTakeAction = (status: ApprovalRequest['status']) =>
   status === 'pending' || status === 'needs_info'
 
-function ApprovalStep({ approval, nextAction, onAction }: ApprovalStepProps) {
+const cleanCopy = (value: string) =>
+  value.replaceAll('\u00e2\u20ac\u201d', '-').replaceAll('\u00c2\u00b7', '-')
+
+function ApprovalStep({ approval, onAction }: ApprovalStepProps) {
+  const initial = approval.toolName.charAt(0)
+  const submitted = `by ${approval.submittedBy} - ${formatDate(approval.submittedDate)}`
+  const actionable = canTakeAction(approval.status)
+
   return (
-    <article className="card approval-step">
-      <div className="approval-step__compact">
-        <span className="tool-avatar approval-step__avatar" aria-hidden="true">
-          {approval.toolName.charAt(0)}
+    <article className="approval-work-row">
+      <div className="approval-work-row__tool">
+        <span className="approval-work-row__icon" aria-hidden="true">
+          {initial}
         </span>
-        <div className="approval-step__identity">
-          <div className="approval-step__title-row">
+        <div className="approval-work-row__identity">
+          <div className="approval-work-row__title">
             <h3>{approval.toolName}</h3>
             <RiskBadge risk={approval.risk} />
           </div>
-          <p>{approval.reasonForReview}</p>
-        </div>
-        <div className="approval-step__requested">
-          <span>Requested</span>
-          <strong>{approval.requestedDecision}</strong>
-          <small>by {approval.submittedBy} · {formatDate(approval.submittedDate)}</small>
-        </div>
-        <div className="approval-step__owner">
-          <span>Owner</span>
-          <strong>{approval.owner}</strong>
-          <small>{approval.department}</small>
-        </div>
-        <div className="approval-step__cost">
-          <span>Renews · Cost</span>
-          <strong>{formatCurrency(approval.cost)}/mo</strong>
-          <small>{formatDate(approval.renewalDate)}</small>
+          <p>{cleanCopy(approval.reasonForReview)}</p>
         </div>
       </div>
 
-      <p className="approval-step__next">{nextAction}</p>
+      <div className="approval-work-row__cell">
+        <span>Requested</span>
+        <strong>{approval.requestedDecision}</strong>
+        <small>{submitted}</small>
+      </div>
 
-      {canTakeAction(approval.status) ? (
-        <div className="approval-step__actions">
-          <button
-            type="button"
-            onClick={() => onAction('Approval marked as approved for this mock workflow.')}
-          >
-            Approve
-          </button>
-          <button
-            className="button-secondary"
-            type="button"
-            onClick={() => onAction('Changes requested from the tool owner.')}
-          >
-            Changes
-          </button>
-          <button
-            className="button-secondary button-secondary--danger"
-            type="button"
-            onClick={() => onAction('Request rejected for this mock workflow.')}
-          >
-            Reject
-          </button>
-        </div>
-      ) : (
-        <div className="approval-step__actions">
-          <button className="button-secondary" type="button">
+      <div className="approval-work-row__cell">
+        <span>Owner</span>
+        <strong>{approval.owner}</strong>
+        <small>{approval.department}</small>
+      </div>
+
+      <div className="approval-work-row__cell approval-work-row__cost">
+        <span>Renews {'\u00b7'} Cost</span>
+        <strong>{formatCurrency(approval.cost)}/mo</strong>
+        <small>{formatDate(approval.renewalDate)}</small>
+      </div>
+
+      <div className="approval-work-row__actions" aria-label={`${approval.toolName} approval actions`}>
+        {actionable ? (
+          <>
+            <button
+              type="button"
+              onClick={() => onAction('Approval marked as approved for this mock workflow.')}
+            >
+              Approve
+            </button>
+            <button
+              className="button-secondary"
+              type="button"
+              onClick={() => onAction('Changes requested from the tool owner.')}
+            >
+              Request changes
+            </button>
+            <button
+              className="button-secondary button-secondary--danger"
+              type="button"
+              onClick={() => onAction('Request rejected for this mock workflow.')}
+            >
+              Reject
+            </button>
+          </>
+        ) : (
+          <button className="button-secondary approval-work-row__view" type="button">
             View
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </article>
   )
 }

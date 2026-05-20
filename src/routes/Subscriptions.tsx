@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import EmptyState from '../components/EmptyState'
+import FilterDropdown from '../components/FilterDropdown'
 import MetricCard from '../components/MetricCard'
 import SubscriptionTable from '../components/SubscriptionTable'
 import { subscriptions } from '../data/subscriptions'
@@ -104,6 +105,7 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
   const highRiskCount = subscriptions.filter(
     (subscription) => subscription.renewalRisk === 'high',
   ).length
+
   return (
     <section className="subscriptions-page" aria-labelledby="subscriptions-title">
       <div className="subscriptions-header">
@@ -171,84 +173,68 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
           </label>
 
           <div className="reference-filterbar__chips">
-            <label className="filter-chip-field">
-              <span>Category</span>
-              <select
-                onChange={(event) => setCategory(event.target.value as ToolCategory | 'all')}
-                value={category}
-              >
-                <option value="all">All</option>
-                {categories.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <FilterDropdown
+              className="filter-dropdown--category"
+              label="Category"
+              onChange={(value) => setCategory(value as ToolCategory | 'all')}
+              options={[
+                { label: 'All', value: 'all' },
+                ...categories.map((item) => ({ label: item, value: item })),
+              ]}
+              value={category}
+            />
+            <FilterDropdown
+              className="filter-dropdown--risk"
+              label="Risk"
+              onChange={(value) => setRisk(value as RenewalRisk | 'all')}
+              options={[
+                { label: 'Any', value: 'all' },
+                ...risks.map((item) => ({ label: labelFromValue(item), value: item })),
+              ]}
+              value={risk}
+            />
+            <FilterDropdown
+              className="filter-dropdown--status"
+              label="Status"
+              onChange={(value) => setStatus(value as SubscriptionStatus | 'all')}
+              options={[
+                { label: 'Any', value: 'all' },
+                ...subscriptionStatuses.map((item) => ({
+                  label: labelFromValue(item),
+                  value: item,
+                })),
+              ]}
+              value={status}
+            />
+            <FilterDropdown
+              className="filter-dropdown--approval"
+              label="Approval"
+              onChange={(value) => setApprovalStatus(value as ApprovalStatus | 'all')}
+              options={[
+                { label: 'Any', value: 'all' },
+                ...approvalStatuses.map((item) => ({
+                  label: labelFromValue(item),
+                  value: item,
+                })),
+              ]}
+              value={approvalStatus}
+            />
+            <FilterDropdown
+              className="filter-dropdown--cycle"
+              label="Cycle"
+              onChange={(value) => setBillingCycle(value as BillingCycle | 'all')}
+              options={[
+                { label: 'Any', value: 'all' },
+                ...billingCycles.map((item) => ({ label: labelFromValue(item), value: item })),
+              ]}
+              value={billingCycle}
+            />
 
-            <label className="filter-chip-field">
-              <span>Risk</span>
-              <select
-                onChange={(event) => setRisk(event.target.value as RenewalRisk | 'all')}
-                value={risk}
-              >
-                <option value="all">Any</option>
-                {risks.map((item) => (
-                  <option key={item} value={item}>
-                    {labelFromValue(item)}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="filter-chip-field">
-              <span>Status</span>
-              <select
-                onChange={(event) => setStatus(event.target.value as SubscriptionStatus | 'all')}
-                value={status}
-              >
-                <option value="all">Any</option>
-                {subscriptionStatuses.map((item) => (
-                  <option key={item} value={item}>
-                    {labelFromValue(item)}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="filter-chip-field">
-              <span>Approval</span>
-              <select
-                onChange={(event) =>
-                  setApprovalStatus(event.target.value as ApprovalStatus | 'all')
-                }
-                value={approvalStatus}
-              >
-                <option value="all">Any</option>
-                {approvalStatuses.map((item) => (
-                  <option key={item} value={item}>
-                    {labelFromValue(item)}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="filter-chip-field">
-              <span>Cycle</span>
-              <select
-                onChange={(event) => setBillingCycle(event.target.value as BillingCycle | 'all')}
-                value={billingCycle}
-              >
-                <option value="all">Any</option>
-                {billingCycles.map((item) => (
-                  <option key={item} value={item}>
-                    {labelFromValue(item)}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <button className="button-secondary filter-reset" onClick={clearFilters} type="button">
+            <button
+              className="button-secondary subscriptions-reset-button"
+              onClick={clearFilters}
+              type="button"
+            >
               <span aria-hidden="true">×</span>
               Reset
             </button>
@@ -256,11 +242,6 @@ function Subscriptions({ onOpenDetail }: SubscriptionsProps) {
 
           <span className="reference-filterbar__count">Showing 16 of 24</span>
         </div>
-
-        <button className="button-secondary subscriptions-more-filters" type="button">
-          <span aria-hidden="true">≡</span>
-          More filters
-        </button>
       </section>
 
       <section className="card subscriptions-table-card" aria-labelledby="table-title">

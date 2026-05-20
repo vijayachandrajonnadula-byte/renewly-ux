@@ -20,6 +20,13 @@ const labelFromValue = (value: string) =>
     .join(' ')
 
 function SavingsCard({ onAction, opportunity, usageSignal }: SavingsCardProps) {
+  const confidenceTone =
+    opportunity.confidence === 'high'
+      ? 'success'
+      : opportunity.confidence === 'medium'
+        ? 'warning'
+        : 'neutral'
+
   return (
     <article className="card savings-card">
       <div className="savings-card__header">
@@ -29,10 +36,10 @@ function SavingsCard({ onAction, opportunity, usageSignal }: SavingsCardProps) {
           </span>
           <div>
             <h3 className="savings-card__title">{opportunity.toolName}</h3>
-            <p>Based on mock usage signal · last 60 days</p>
+            <p>Based on mock usage signal {'\u00b7'} last 60 days</p>
           </div>
         </div>
-        <span className={`badge status-badge status-badge--${opportunity.confidence === 'high' ? 'success' : opportunity.confidence === 'medium' ? 'warning' : 'neutral'}`}>
+        <span className={`badge status-badge status-badge--${confidenceTone}`}>
           {opportunity.confidence} confidence
         </span>
       </div>
@@ -57,7 +64,9 @@ function SavingsCard({ onAction, opportunity, usageSignal }: SavingsCardProps) {
       <div className="savings-card__recommendation">
         <span>Recommended</span>
         <strong>{opportunity.recommendedAction}</strong>
-        <em>Risk · {opportunity.riskLevel}</em>
+        <em className={`savings-card__risk savings-card__risk--${opportunity.riskLevel}`}>
+          Risk {'\u00b7'} {opportunity.riskLevel}
+        </em>
       </div>
       {onAction ? (
         <div className="savings-card__actions">
@@ -68,7 +77,7 @@ function SavingsCard({ onAction, opportunity, usageSignal }: SavingsCardProps) {
             Review with owner
           </button>
           <button
-            className="button-secondary"
+            className="button-link savings-card__open"
             type="button"
             onClick={() => onAction('Owner confirmation requested.')}
           >
@@ -79,7 +88,7 @@ function SavingsCard({ onAction, opportunity, usageSignal }: SavingsCardProps) {
             type="button"
             onClick={() => onAction('Opportunity marked as reviewed.')}
           >
-            Open tool ↗
+            Open tool
           </button>
         </div>
       ) : null}

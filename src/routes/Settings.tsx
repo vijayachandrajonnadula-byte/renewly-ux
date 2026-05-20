@@ -82,6 +82,7 @@ function Settings() {
             'Billing',
           ].map((item, index) => (
             <button
+              aria-current={index === 0 ? 'page' : undefined}
               className={index === 0 ? 'settings-tabs__item settings-tabs__item--active' : 'settings-tabs__item'}
               key={item}
               type="button"

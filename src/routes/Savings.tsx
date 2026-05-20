@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import ConfirmationToast from '../components/ConfirmationToast'
 import EmptyState from '../components/EmptyState'
+import FilterDropdown from '../components/FilterDropdown'
 import MetricCard from '../components/MetricCard'
 import SavingsCard from '../components/SavingsCard'
 import { savingsOpportunities } from '../data/savings'
@@ -32,6 +33,29 @@ const labelFromValue = (value: string) =>
     .split('_')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ')
+
+const typeOptions = [
+  { label: 'All types', value: 'all' },
+  ...opportunityTypes.map((type) => ({ label: labelFromValue(type), value: type })),
+]
+
+const confidenceOptions = [
+  { label: 'Any', value: 'all' },
+  ...confidenceLevels.map((confidence) => ({
+    label: labelFromValue(confidence),
+    value: confidence,
+  })),
+]
+
+const riskOptions = [
+  { label: 'Low + medium', value: 'all' },
+  ...riskLevels.map((risk) => ({ label: labelFromValue(risk), value: risk })),
+]
+
+const sortOptions = [
+  { label: 'Highest savings first', value: 'highest' },
+  { label: 'Default order', value: 'default' },
+]
 
 function Savings() {
   const [typeFilter, setTypeFilter] = useState<SavingsOpportunityType | 'all'>('all')
@@ -131,63 +155,35 @@ function Savings() {
 
       <section className="reference-filterbar reference-filterbar--savings" aria-label="Savings filters">
         <div className="reference-filterbar__chips">
-          <label className="filter-chip-field filter-chip-field--wide">
-            <span>Type</span>
-            <select
-              onChange={(event) =>
-                setTypeFilter(event.target.value as SavingsOpportunityType | 'all')
-              }
-              value={typeFilter}
-            >
-              <option value="all">All types</option>
-              {opportunityTypes.map((type) => (
-                <option key={type} value={type}>
-                  {labelFromValue(type)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="filter-chip-field filter-chip-field--wide">
-            <span>Confidence</span>
-            <select
-              onChange={(event) =>
-                setConfidenceFilter(event.target.value as SavingsConfidence | 'all')
-              }
-              value={confidenceFilter}
-            >
-              <option value="all">Any</option>
-              {confidenceLevels.map((confidence) => (
-                <option key={confidence} value={confidence}>
-                  {labelFromValue(confidence)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="filter-chip-field filter-chip-field--wide">
-            <span>Risk</span>
-            <select
-              onChange={(event) => setRiskFilter(event.target.value as RenewalRisk | 'all')}
-              value={riskFilter}
-            >
-              <option value="all">Low + medium</option>
-              {riskLevels.map((risk) => (
-                <option key={risk} value={risk}>
-                  {labelFromValue(risk)}
-                </option>
-              ))}
-            </select>
-          </label>
+          <FilterDropdown
+            className="filter-dropdown--savings-type"
+            label="Type"
+            onChange={(value) => setTypeFilter(value as SavingsOpportunityType | 'all')}
+            options={typeOptions}
+            value={typeFilter}
+          />
+          <FilterDropdown
+            className="filter-dropdown--savings-confidence"
+            label="Confidence"
+            onChange={(value) => setConfidenceFilter(value as SavingsConfidence | 'all')}
+            options={confidenceOptions}
+            value={confidenceFilter}
+          />
+          <FilterDropdown
+            className="filter-dropdown--savings-risk"
+            label="Risk"
+            onChange={(value) => setRiskFilter(value as RenewalRisk | 'all')}
+            options={riskOptions}
+            value={riskFilter}
+          />
         </div>
-        <label className="filter-chip-field filter-chip-field--sort">
-          <span>Sort</span>
-          <select
-            onChange={(event) => setSortOrder(event.target.value as SavingsSort)}
-            value={sortOrder}
-          >
-            <option value="highest">Highest savings first</option>
-            <option value="default">Default order</option>
-          </select>
-        </label>
+        <FilterDropdown
+          className="filter-dropdown--savings-sort"
+          label="Sort"
+          onChange={(value) => setSortOrder(value as SavingsSort)}
+          options={sortOptions}
+          value={sortOrder}
+        />
       </section>
 
       {filteredOpportunities.length > 0 ? (
