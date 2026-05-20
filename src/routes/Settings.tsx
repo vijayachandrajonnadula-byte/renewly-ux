@@ -34,6 +34,16 @@ const settingsSections = [
   { id: 'billing', label: 'Billing' },
 ]
 
+const mobileSettingsSections = [
+  { id: 'mobile-company-profile', label: 'Company' },
+  { id: 'mobile-renewal-alerts', label: 'Alerts' },
+  { id: 'mobile-approval-rules', label: 'Rules' },
+  { id: 'mobile-team-roles', label: 'Roles' },
+  { id: 'mobile-notifications', label: 'Notifications' },
+  { id: 'mobile-integrations', label: 'Integrations' },
+  { id: 'mobile-billing', label: 'Billing' },
+]
+
 function Settings() {
   const [confirmationMessage, setConfirmationMessage] = useState('')
   const [alertWindow, setAlertWindow] = useState('60')
@@ -53,10 +63,20 @@ function Settings() {
     })
   }
 
+  const handleMobileSectionClick = (sectionId: string) => {
+    setActiveSection(sectionId.replace('mobile-', ''))
+    document.getElementById(sectionId)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
+
   useEffect(() => {
     const updateActiveSection = () => {
       const sectionOffset = 112
-      const currentSection = [...settingsSections]
+      const isMobile = window.matchMedia('(max-width: 768px)').matches
+      const sourceSections = isMobile ? mobileSettingsSections : settingsSections
+      const currentSection = [...sourceSections]
         .reverse()
         .find((section) => {
           const element = document.getElementById(section.id)
@@ -64,7 +84,7 @@ function Settings() {
           return element ? element.getBoundingClientRect().top <= sectionOffset : false
         })
 
-      setActiveSection(currentSection?.id ?? settingsSections[0].id)
+      setActiveSection((currentSection?.id ?? sourceSections[0].id).replace('mobile-', ''))
     }
 
     updateActiveSection()
@@ -79,7 +99,207 @@ function Settings() {
 
   return (
     <section className="settings-page" aria-labelledby="settings-title">
-      <div className="dashboard__header">
+      <div className="mobile-page settings-mobile-page" aria-label="Mobile settings">
+        <header className="mobile-page-header settings-mobile-header">
+          <h1>Settings</h1>
+          <p>Configure company preferences, renewal alerts, approval rules, and team roles.</p>
+          <div className="settings-mobile-actions">
+            <button
+              className="mobile-secondary-button"
+              type="button"
+              onClick={() => showConfirmation('Settings reset to the previous mock values.')}
+            >
+              Discard
+            </button>
+            <button
+              className="mobile-primary-button"
+              type="button"
+              onClick={() => showConfirmation('Settings saved for this mock workflow.')}
+            >
+              Save changes
+            </button>
+          </div>
+        </header>
+
+        <nav className="settings-mobile-tabs" aria-label="Settings sections">
+          {mobileSettingsSections.map((item) => (
+            <button
+              aria-current={activeSection === item.id.replace('mobile-', '') ? 'page' : undefined}
+              className={activeSection === item.id.replace('mobile-', '') ? 'is-active' : ''}
+              key={item.id}
+              onClick={() => handleMobileSectionClick(item.id)}
+              type="button"
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="settings-mobile-stack">
+          <section className="settings-mobile-card" id="mobile-company-profile">
+            <h2>Company profile</h2>
+            <p>Basic workspace information for the mock Renewly environment.</p>
+            <div className="settings-mobile-form">
+              <label>
+                <span>Company name</span>
+                <input defaultValue="Acme Operations Group" />
+              </label>
+              <label>
+                <span>Workspace name</span>
+                <input defaultValue="Acme SaaS Renewals" />
+              </label>
+              <label>
+                <span>Default currency</span>
+                <select defaultValue="USD">
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                </select>
+              </label>
+              <label>
+                <span>Fiscal year start</span>
+                <select defaultValue="January">
+                  <option>January</option>
+                  <option>April</option>
+                  <option>July</option>
+                  <option>October</option>
+                </select>
+              </label>
+              <label>
+                <span>Primary finance contact</span>
+                <input defaultValue="Marcus Reed" />
+              </label>
+            </div>
+          </section>
+
+          <section className="settings-mobile-card" id="mobile-renewal-alerts">
+            <h2>Renewal alerts</h2>
+            <p>Control when renewal work becomes visible to the team.</p>
+            <div className="settings-mobile-form">
+              <label>
+                <span>Alert before renewal</span>
+                <select value={alertWindow} onChange={(event) => setAlertWindow(event.target.value)}>
+                  <option value="30">30 days</option>
+                  <option value="60">60 days</option>
+                  <option value="90">90 days</option>
+                </select>
+              </label>
+              {[
+                'Alert before cancellation window closes',
+                'Weekly renewal digest',
+                'High-risk renewal alerts',
+              ].map((label) => (
+                <label className="settings-mobile-check" key={label}>
+                  <input type="checkbox" defaultChecked />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </section>
+
+          <section className="settings-mobile-card" id="mobile-approval-rules">
+            <h2>Approval rules</h2>
+            <p>Mock safeguards that make review requirements clear before renewal decisions.</p>
+            <div className="settings-mobile-form">
+              <label className="settings-mobile-check">
+                <input type="checkbox" defaultChecked />
+                <span>Require owner review for high-risk renewals</span>
+              </label>
+              <label>
+                <span>Finance approval threshold</span>
+                <select value={costThreshold} onChange={(event) => setCostThreshold(event.target.value)}>
+                  <option value="5000">$5,000 annual cost</option>
+                  <option value="10000">$10,000 annual cost</option>
+                  <option value="25000">$25,000 annual cost</option>
+                </select>
+              </label>
+              <label>
+                <span>Low utilisation review threshold</span>
+                <select
+                  value={utilisationThreshold}
+                  onChange={(event) => setUtilisationThreshold(event.target.value)}
+                >
+                  <option value="40">Below 40%</option>
+                  <option value="60">Below 60%</option>
+                  <option value="75">Below 75%</option>
+                </select>
+              </label>
+              <label className="settings-mobile-check">
+                <input type="checkbox" defaultChecked />
+                <span>Require cancellation review before final cancellation</span>
+              </label>
+            </div>
+          </section>
+
+          <section className="settings-mobile-card" id="mobile-team-roles">
+            <h2>Team roles</h2>
+            <p>Role concepts for a future permissions model in the mock workspace.</p>
+            <div className="settings-mobile-roles">
+              {teamRoles.map((role) => (
+                <article className="settings-mobile-role" key={role.name}>
+                  <div>
+                    <h3>{role.name}</h3>
+                    <p>{role.permissions}</p>
+                    <span>{role.users} users</span>
+                  </div>
+                  <button className="mobile-secondary-button" type="button">
+                    Edit
+                  </button>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="settings-mobile-card" id="mobile-notifications">
+            <h2>Notifications</h2>
+            <p>External channels are mock or future placeholders and are not connected.</p>
+            <div className="settings-mobile-form">
+              {[
+                'Email alerts',
+                'Slack-style digest placeholder (mock future integration)',
+                'Monthly finance report reminder',
+                'Renewal calendar reminder',
+              ].map((label, index) => (
+                <label className="settings-mobile-check" key={label}>
+                  <input type="checkbox" defaultChecked={index !== 1} />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </section>
+
+          <section className="settings-mobile-card" id="mobile-integrations">
+            <h2>Integrations</h2>
+            <p>Mock future connection points for subscription and communication systems.</p>
+            <div className="settings-mobile-form">
+              <label className="settings-mobile-check">
+                <input type="checkbox" />
+                <span>Prepare accounting export placeholder</span>
+              </label>
+              <label className="settings-mobile-check">
+                <input type="checkbox" />
+                <span>Enable mock calendar handoff notes</span>
+              </label>
+            </div>
+          </section>
+
+          <section className="settings-mobile-card" id="mobile-billing">
+            <h2>Billing</h2>
+            <p>Portfolio placeholder for future workspace billing and plan controls.</p>
+            <div className="settings-mobile-form">
+              <label>
+                <span>Plan visibility</span>
+                <select defaultValue="finance">
+                  <option value="finance">Finance admins only</option>
+                  <option value="admins">All admins</option>
+                </select>
+              </label>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div className="dashboard__header settings-desktop-header">
         <div>
           <h2 className="dashboard__title" id="settings-title">
             Settings
@@ -113,7 +333,7 @@ function Settings() {
         />
       ) : null}
 
-      <div className="settings-layout">
+      <div className="settings-layout settings-desktop-layout">
         <aside className="settings-tabs settings-subnav" aria-label="Settings sections">
           {settingsSections.map((item) => (
             <button
